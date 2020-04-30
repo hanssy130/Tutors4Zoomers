@@ -1,0 +1,6 @@
+To start the program type the following into the console.
+
+
+1. npm install and (press enter)
+2. node index.js
+3. Type localhost:3001 into your webbrowser
