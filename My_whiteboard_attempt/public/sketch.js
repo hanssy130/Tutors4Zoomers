@@ -46,6 +46,7 @@
 let socket;
 let lineArray;
 let canvas;
+let currentColour = 'black';
 function setup() {
     canvas = createCanvas(400, 400);
     // set background to black
@@ -53,6 +54,8 @@ function setup() {
     lineArray = [];
     socket = io.connect('http://localhost:3000/');
     socket.on('line', newLines);
+    socket.on('colour', updateColour);
+    socket.on('clear',clearCanvas)
 }
 
 function newLines(data){
@@ -63,6 +66,16 @@ function newLines(data){
     }
 }
 
+function updateColour(data) {
+    currentColour = data;
+}
+
+function clearCanvas(data) {
+    console.log(data);
+    canvas.clear();
+    background(51);
+}
+
 function draw()
 {
 }
@@ -70,13 +83,17 @@ function draw()
 function LineObject(x,y,px,py){
     // makes a line
     line(x,y,px,py);
+    stroke(currentColour);
+    strokeWeight(5);
 }
+
 let lines = [];
 let lineCount = 0;
 function mouseDragged() {
-    strokeWeight(10);
     // uses the current coords of the mouse and previous coords to make a line
     let line = new LineObject(mouseX, mouseY, pmouseX, pmouseY);
+    stroke(currentColour);
+    strokeWeight(5);
     console.log("new line");
     lines.push(line);
 
@@ -90,6 +107,7 @@ function mouseDragged() {
     // send the coords to other users
     socket.emit('line', coord);
     console.log(lines[0]);
+
 }
 
 function mouseReleased(){
@@ -98,8 +116,24 @@ function mouseReleased(){
     console.log("lineCount:"+ lineCount);
 
 }
+
+
 function keyPressed() {
     // remove all elements from the canvas
-    canvas.clear();
-    background(51);
+    if (key === 'e') {
+        clearCanvas();
+        socket.emit('clear', 'clear');
+    }
+
 }
+
+document.getElementById("red").addEventListener("click", function(){
+    console.log("red");
+    currentColour = 'red';
+    socket.emit('colour', currentColour);
+});
+
+document.getElementById("yellow").addEventListener("click", function(){
+    currentColour = 'yellow';
+    socket.emit('colour', currentColour);
+});

@@ -19,6 +19,8 @@ function newConnection(socket) {
 
     socket.on('mouse', mouseMsg);
     socket.on('line', lineMsg);
+    socket.on('colour', colourUpdate);
+    socket.on('clear', clearCanvas);
     function mouseMsg(data) {
         // send data back out to others
         socket.broadcast.emit('mouse',data);
@@ -27,5 +29,14 @@ function newConnection(socket) {
 
     function lineMsg(data) {
         socket.broadcast.emit('line',data);
+    }
+
+    function colourUpdate(data) {
+        console.log("colour received");
+        socket.broadcast.emit('colour', data);
+    }
+
+    function clearCanvas(data) {
+        socket.broadcast.emit('clear',data);
     }
 }
