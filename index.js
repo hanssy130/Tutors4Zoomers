@@ -29,6 +29,12 @@ app.get("/login", (req, res)=> {
     res.render("login")
 });
 
+// Sign Up
+// =====================================
+
+app.get("/signup", (req, res)=> {
+    res.render("signup")
+});
 
 
 let port = process.env.PORT;
