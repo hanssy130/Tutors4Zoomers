@@ -21,6 +21,23 @@ function newConnection(socket) {
     socket.on('line', lineMsg);
     socket.on('colour', colourUpdate);
     socket.on('clear', clearCanvas);
+    socket.on('lineLengths', updateLinesLength);
+    socket.on('lineArray', updateLineArray);
+    socket.on('delete', tester);
+
+    function tester(){
+        socket.broadcast.emit('delete');
+    }
+    function updateLinesLength(data) {
+        // send data back out to others
+        socket.broadcast.emit('lineLengths', data);
+    }
+
+    function updateLineArray(data) {
+        // send data back out to others
+        socket.broadcast.emit('lineArray', data);
+    }
+
     function mouseMsg(data) {
         // send data back out to others
         socket.broadcast.emit('mouse',data);
@@ -28,15 +45,17 @@ function newConnection(socket) {
     }
 
     function lineMsg(data) {
+        // send data back out to others
         socket.broadcast.emit('line',data);
     }
 
     function colourUpdate(data) {
-        console.log("colour received");
+        // send data back out to others
         socket.broadcast.emit('colour', data);
     }
 
     function clearCanvas(data) {
+        // send data back out to others
         socket.broadcast.emit('clear',data);
     }
 }

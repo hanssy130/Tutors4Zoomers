@@ -47,6 +47,9 @@ let socket;
 let lineArray;
 let canvas;
 let currentColour = 'black';
+let linesLength = [];
+let lineCount = 0;
+let lines = [];
 function setup() {
     canvas = createCanvas(400, 400);
     // set background to black
@@ -55,7 +58,23 @@ function setup() {
     socket = io.connect('http://localhost:3000/');
     socket.on('line', newLines);
     socket.on('colour', updateColour);
-    socket.on('clear',clearCanvas)
+    socket.on('clear',clearCanvas);
+    socket.on('lineLengths', updateLinesLength);
+    socket.on('lineArray', updateLineArray);
+    socket.on('delete', deleteNewest);
+}
+function updateLinesLength(data) {
+    linesLength = data;
+    console.log("update lines length")
+}
+
+function updateLineArray(data) {
+    lineArray = data;
+}
+
+function deleteNewest(){
+    clearCanvas('cleared');
+    reDrawCanvas();
 }
 
 function newLines(data){
@@ -65,6 +84,7 @@ function newLines(data){
         console.log("got line from the web!");
     }
 }
+
 
 function updateColour(data) {
     currentColour = data;
@@ -82,39 +102,62 @@ function draw()
 
 function LineObject(x,y,px,py){
     // makes a line
-    line(x,y,px,py);
+    let lineOutput = line(x,y,px,py);
     stroke(currentColour);
     strokeWeight(5);
+    return lineOutput;
 }
 
-let lines = [];
-let lineCount = 0;
 function mouseDragged() {
     // uses the current coords of the mouse and previous coords to make a line
-    let line = new LineObject(mouseX, mouseY, pmouseX, pmouseY);
+    LineObject(mouseX, mouseY, pmouseX, pmouseY);
     stroke(currentColour);
     strokeWeight(5);
-    console.log("new line");
-    lines.push(line);
 
     // a data structure to send data to other computers
     let coord = {
         x: mouseX,
         y: mouseY,
         px: pmouseX,
-        py: pmouseY
+        py: pmouseY,
+        color: currentColour
     };
+    // push coords into line array
+    lines.push(coord);
+    // sends the coords to the big array of lines
+    if(lines.length > 0) {
+        lineArray.push(coord);
+    }
+    //console.log(coord);
     // send the coords to other users
     socket.emit('line', coord);
-    console.log(lines[0]);
-
 }
 
 function mouseReleased(){
-    // increment the line count when the mouse is release
-    lineCount++;
-    console.log("lineCount:"+ lineCount);
+    // sends the line length to array
+    if (lines.length > 0) {
+        linesLength.push(lines.length);
+        lineCount++;
+    }
+    console.log("line count:" + lineCount);
+    console.log("line length:" + lines.length);
+    lines.length = 0;
+}
 
+function reDrawCanvas() {
+    // how many points to delete
+    let numberOfPoints = linesLength.pop();
+    console.log("length of line remove:" + numberOfPoints);
+    // removes the amount of points specified
+    let oldLength = lineArray.length;
+    lineArray.length = (oldLength - numberOfPoints);
+
+    // redraws all the lines in the scene that were not deleted
+    for (let index = 0; index < lineArray.length; index++) {
+        let data = lineArray[index];
+        LineObject(data.x, data.y, data.px,data.py);
+        stroke(data.color);
+    }
 }
 
 
@@ -124,7 +167,19 @@ function keyPressed() {
         clearCanvas();
         socket.emit('clear', 'clear');
     }
+    if(key === 'c') {
+        for (let x = 0; x < lineArray.length; x++) {
+            console.log('line: ' + x);
+        }
+    }
 
+    if (key === 'z') {
+        socket.emit('lineLengths', linesLength);
+        socket.emit('lineArray', lineArray);
+        socket.emit('delete');
+        console.log("SENT DELETE");
+        deleteNewest()
+    }
 }
 
 document.getElementById("red").addEventListener("click", function(){
