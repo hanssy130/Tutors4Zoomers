@@ -7,9 +7,17 @@
 
     <%- include("partials/navbar.ejs") -%>
 
-      <div>
-
-      </div>
+    <div class="d-flex justify-content-center align-items-center login-container">
+      <form class="login-form text-center" action="/signup" method="POST">
+          <div class="form-group mt-3">
+              <input type="text" name="username" class="form-control rounded-pill form-control-lg" placeholder="username" required>
+          </div>
+          <div class="form-group">
+              <input type="password" name="password" class="form-control rounded-pill form-control-lg" placeholder="password" required>
+          </div>
+          <button type="submit" class="btn mt-4 rounded-pill btn-lg btn-custom btn-block text-uppercase">SignUp</button>
+      </form>
+  </div>
 
 
 <%- include("partials/footer") -%>
