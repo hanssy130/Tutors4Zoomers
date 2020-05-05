@@ -76,6 +76,12 @@ app.get("/login", (req, res) => {
     res.render("login");
 });
 
+app.post('/login', passport.authenticate("local", {
+    successRedirect: "/signin",
+    failureRedirect: "/signup"
+}), (req, res) => {
+})
+
 // Sign Up
 // =====================================
 
@@ -113,13 +119,20 @@ app.post("/feature", (req, res) => {
     res.redirect("/feature")
 });
 
+// Login Page
+// ========================================
+
+app.get("/signin", checkAuthenticated ,(req, res) => {
+    res.render("signin")
+});
+
 
 
 // Middleware to prevent user from visiting pages that need login
 // ==============================================================
 
 function checkAuthenticated (req, res, next) {
-    if (req.isAuthenticaed()){
+    if (req.isAuthenticated()){
         return next()
     }
     res.redirect("/signup")
