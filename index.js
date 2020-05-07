@@ -10,8 +10,8 @@ app.set("view engine", "ejs");
 
 app.get("/", (req, res) => res.render("pages/index"));
 
-app.get("/login", (req, res) => res.render("pages/login"));
+// app.get("/login", (req, res) => res.render("pages/login"));
 
-app.get("/signup", (req, res) => res.render("pages/signup"));
+// app.get("/signup", (req, res) => res.render("pages/signup"));
 
 app.listen(PORT);
