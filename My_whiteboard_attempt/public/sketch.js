@@ -156,6 +156,7 @@ function reDrawCanvas() {
     for (let index = 0; index < lineArray.length; index++) {
         let data = lineArray[index];
         LineObject(data.x, data.y, data.px,data.py);
+        // apply colour
         stroke(data.color);
     }
 }
