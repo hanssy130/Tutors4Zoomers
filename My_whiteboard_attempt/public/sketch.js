@@ -64,6 +64,11 @@ function setup() {
     socket.on('lineLengths', updateLinesLength);
     socket.on('lineArray', updateLineArray);
     socket.on('delete', deleteNewest);
+    socket.on('weight', updateWeightLocal);
+}
+
+function updateWeightLocal(data) {
+    currentWeight = data;
 }
 function updateLinesLength(data) {
     linesLength = data;
@@ -210,4 +215,20 @@ document.getElementById("black").addEventListener("click", function(){
 document.getElementById("eraser").addEventListener("click", function(){
     currentColour = 51;
     socket.emit('colour', currentColour);
+});
+
+// change stroke weight
+document.getElementById("small").addEventListener("click", function(){
+    currentWeight = 3;
+    socket.emit('weight', currentWeight);
+});
+
+document.getElementById("regular").addEventListener("click", function(){
+    currentWeight = 5;
+    socket.emit('weight', currentWeight);
+});
+
+document.getElementById("large").addEventListener("click", function(){
+    currentWeight = 7;
+    socket.emit('weight', currentWeight);
 });
