@@ -22,5 +22,6 @@
   "bugs": {
     "url": "https://github.com/hanssy130/COMP-2800-Team-DTC-13-Tutors4Zoomers/issues"
   },
-  "homepage": "https://github.com/hanssy130/COMP-2800-Team-DTC-13-Tutors4Zoomers#readme"
+  "homepage": "https://github.com/hanssy130/COMP-2800-Team-DTC-13-Tutors4Zoomers#readme",
+  "devDependencies": {}
 }
