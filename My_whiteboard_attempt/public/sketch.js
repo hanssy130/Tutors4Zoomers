@@ -47,11 +47,13 @@ let socket;
 let lineArray;
 let canvas;
 let currentColour = 'black';
+let currentWeight = 5;
 let linesLength = [];
 let lineCount = 0;
 let lines = [];
 function setup() {
     canvas = createCanvas(400, 400);
+    canvas.id('myCanvas');
     // set background to black
     background(51);
     lineArray = [];
@@ -79,7 +81,7 @@ function deleteNewest(){
 
 function newLines(data){
     // makes a line on a a screen based off received data.
-    let line = new LineObject(data.x,data.y,data.px,data.py);
+    let line = new LineObject(data.x,data.y,data.px,data.py,data.weight);
     if(line){
         console.log("got line from the web!");
     }
@@ -100,19 +102,18 @@ function draw()
 {
 }
 
-function LineObject(x,y,px,py){
+function LineObject(x,y,px,py,weight){
     // makes a line
     let lineOutput = line(x,y,px,py);
     stroke(currentColour);
-    strokeWeight(5);
+    strokeWeight(weight);
     return lineOutput;
 }
 
 function mouseDragged() {
     // uses the current coords of the mouse and previous coords to make a line
-    LineObject(mouseX, mouseY, pmouseX, pmouseY);
+    LineObject(mouseX, mouseY, pmouseX, pmouseY, currentWeight);
     stroke(currentColour);
-    strokeWeight(5);
 
     // a data structure to send data to other computers
     let coord = {
@@ -120,7 +121,8 @@ function mouseDragged() {
         y: mouseY,
         px: pmouseX,
         py: pmouseY,
-        color: currentColour
+        color: currentColour,
+        weight: currentWeight
     };
     // push coords into line array
     lines.push(coord);
@@ -145,6 +147,9 @@ function mouseReleased(){
 }
 
 function reDrawCanvas() {
+    if (linesLength.length === 0){
+        return;
+    }
     // how many points to delete
     let numberOfPoints = linesLength.pop();
     console.log("length of line remove:" + numberOfPoints);
@@ -155,7 +160,7 @@ function reDrawCanvas() {
     // redraws all the lines in the scene that were not deleted
     for (let index = 0; index < lineArray.length; index++) {
         let data = lineArray[index];
-        LineObject(data.x, data.y, data.px,data.py);
+        LineObject(data.x, data.y, data.px,data.py, data.weight);
         stroke(data.color);
     }
 }
@@ -182,13 +187,19 @@ function keyPressed() {
     }
 }
 
+//change to red
 document.getElementById("red").addEventListener("click", function(){
     console.log("red");
     currentColour = 'red';
     socket.emit('colour', currentColour);
 });
-
+//change to yellow
 document.getElementById("yellow").addEventListener("click", function(){
     currentColour = 'yellow';
+    socket.emit('colour', currentColour);
+});
+//change to eraser
+document.getElementById("eraser").addEventListener("click", function(){
+    currentColour = 51;
     socket.emit('colour', currentColour);
 });

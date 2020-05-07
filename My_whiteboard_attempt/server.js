@@ -28,6 +28,7 @@ function newConnection(socket) {
     function tester(){
         socket.broadcast.emit('delete');
     }
+
     function updateLinesLength(data) {
         // send data back out to others
         socket.broadcast.emit('lineLengths', data);
