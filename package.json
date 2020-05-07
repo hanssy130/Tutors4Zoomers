@@ -1,7 +1,7 @@
 {
   "name": "test",
   "version": "1.0.0",
-  "description": "",
+  "description": "Our application is a portal for users to connect with volunteer tutors or students. We want to inspire our communities to volunteer their time to help students in need during COVID-19. Our application features tutor registration, booking lessons, collaborative whiteboarding, and online communication via video and/or text messaging.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -14,5 +14,13 @@
     "express": "^4.17.1",
     "firebase": "^7.14.2",
     "firebase-admin": "^8.11.0"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hanssy130/COMP-2800-Team-DTC-13-Tutors4Zoomers.git"
+  },
+  "bugs": {
+    "url": "https://github.com/hanssy130/COMP-2800-Team-DTC-13-Tutors4Zoomers/issues"
+  },
+  "homepage": "https://github.com/hanssy130/COMP-2800-Team-DTC-13-Tutors4Zoomers#readme"
 }
