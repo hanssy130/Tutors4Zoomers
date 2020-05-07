@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta
+      charset="UTF-8"
+      name="viewport"
+      content="width=device-width,initial-scale=1"
+    />
+    <title>Tutors4Zoomers</title>
+
+    <!-- <link rel="stylesheet" type="text/css" href="style.css" /> -->
+    <style>
+      body {
+        font-family: "Segoe UI", Arial, sans-serif;
+        font-weight: 400;
+        margin: 10px 0;
+      }
+
+      #navigationbar {
+        background-color: #33bbff;
+        display: grid;
+        grid-gap: 10px 20px;
+        grid-template-columns: 3fr 250px 80px 80px 80px 80px 80px 3fr;
+        align-items: center;
+      }
+
+      .navibar {
+        text-decoration: none;
+        color: white;
+        align-self: center;
+        justify-self: center;
+      }
+
+      #landingphoto {
+        text-align: center;
+      }
+
+      .content {
+        width: 1000px;
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        left: 50%;
+        transform: translate(-50%, 0%);
+      }
+
+      h2 {
+        font-size: 2.5em;
+      }
+
+      .description {
+        width: 800px;
+        position: relative;
+        left: 100px;
+      }
+
+      footer {
+        position: absolute;
+        top: 1450px;
+        color: grey;
+        font-style: italic;
+        font-size: 0.8em;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="navigationbar">
+      <div></div>
+      <a href="index.html"><img src="./resources/logo.png" width="160px" /></a>
+      <a href="#How_It_Works" class="navibar">How It Works</a>
+      <a href="#Features" class="navibar">Features</a>
+      <a href="#For_Parents" class="navibar">About Us</a>
+      <a href="login.html" class="navibar">Login</a>
+      <a href="signup.html" class="navibar">Sign Up</a>
+      <div></div>
+    </div>
+
+    <div id="landingphoto">
+      <img src="./resources/landingphotoedited.png" width="1000px" />
+    </div>
+
+    <div class="content">
+      <div id="How_It_Works" class="item">
+        <h2>How it works</h2>
+        <div class="description">
+          During 2020's COVID-19 crisis, students are not getting enough support
+          for their education due to the transition of online schooling. We came
+          up with an app, Tutors4Zoomers to connect students in need with
+          voluteer tutors. Our mission is to bring help to the students who need
+          and deserve it.
+        </div>
+      </div>
+
+      <div id="Features" class="item">
+        <h2>Features</h2>
+        <div class="description">
+          Description of features. To be constructed.
+        </div>
+      </div>
+
+      <div id="For_Parents" class="item">
+        <h2>For Parents</h2>
+        <div class="description">
+          To be constructed.
+        </div>
+      </div>
+
+      <div id="For_Students" class="item">
+        <h2>For Students</h2>
+        <div class="description">
+          To be constructed.
+        </div>
+      </div>
+
+      <div id="For_Volunteer_Tutors" class="item">
+        <h2>For Volunteer Tutors</h2>
+        <div class="description">
+          To be constructed.
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      © Tutors4Zoomers 2020 by Hans Sy, George Yang, Justin Majam, and David
+      Wang.
+    </footer>
+  </body>
+</html>
