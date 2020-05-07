@@ -1,7 +1,67 @@
-#placeholderImg{
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-    width: 40%;
-  }
+body {
+        font-family: "Segoe UI", Arial, sans-serif;
+        font-weight: 400;
+        margin: 10px 0;
+      }
 
+      #navigationbar {
+        background-color: #33bbff;
+        display: grid;
+        grid-gap: 10px 20px;
+        grid-template-columns: 3fr 250px 80px 80px 80px 80px 80px 3fr;
+        align-items: center;
+      }
+
+      .navibar {
+        text-decoration: none;
+        color: white;
+        align-self: center;
+        justify-self: center;
+      }
+
+      #landingphoto {
+        text-align: center;
+      }
+
+      .content {
+        width: 1000px;
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        left: 50%;
+        transform: translate(-50%, 0%);
+      }
+
+      h2 {
+        font-size: 2.5em;
+      }
+
+      .description {
+        width: 800px;
+        position: relative;
+        left: 100px;
+      }
+
+      footer {
+        position: absolute;
+        top: 2000px;
+        color: grey;
+        font-style: italic;
+        font-size: 0.8em;
+        right: 1%;
+      }
+
+.portalbutton {
+	color: white;
+	background-color: lightblue;
+	font-size: 20px;
+	padding: 10px 24px;
+	border-radius: 4px;
+	border: lightblue;
+	transition-duration: 0.4s;
+}
+
+.portalbutton:hover {
+background-color: white;
+color: lightblue;
+}

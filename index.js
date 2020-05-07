@@ -14,4 +14,11 @@ app.get("/login", (req, res) => res.render("pages/login"));
 
 app.get("/signup", (req, res) => res.render("pages/signup"));
 
+app.get("/portal", (req, res) => res.render("pages/portal"));
+
+app.get("/session/:roomCode", (req, res) => {
+  let roomCode = req.params.roomCode;
+  res.render("pages/session");
+});
+
 app.listen(PORT);
