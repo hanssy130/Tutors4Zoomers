@@ -24,10 +24,12 @@ function newConnection(socket) {
     socket.on('lineLengths', updateLinesLength);
     socket.on('lineArray', updateLineArray);
     socket.on('delete', tester);
+    socket.on('weight', updateWeight);
 
     function tester(){
         socket.broadcast.emit('delete');
     }
+
     function updateLinesLength(data) {
         // send data back out to others
         socket.broadcast.emit('lineLengths', data);
@@ -57,5 +59,10 @@ function newConnection(socket) {
     function clearCanvas(data) {
         // send data back out to others
         socket.broadcast.emit('clear',data);
+    }
+
+    function updateWeight(data) {
+        // send data back out to others
+        socket.broadcast.emit('weight',data);
     }
 }
