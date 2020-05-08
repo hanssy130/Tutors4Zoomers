@@ -27,7 +27,7 @@ app.use(express.static(__dirname + "/public"));
 const dbUsername = "gyang";
 const dbPassword = "123123123";
 mongoose.connect(`mongodb+srv://${dbUsername}:${dbPassword}@cluster0-p9khr.mongodb.net/T4Z`,
-                { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false });
+                { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: true });
 
 // Initialize Passport
 // ==========================================
@@ -44,11 +44,20 @@ app.use(passport.session());
 
 // Initialize Mongoose Schemas
 // =========================================
+const userDetail = new mongoose.Schema({
+    firstName   : String,
+    lastName    : String,
+    age         : String,
+    education   : String,
+    major       : String,
+});
 
 const userSchema = new mongoose.Schema({
     username    : String,
     password    : String,
-})
+    status      : String,
+    detail      : userDetail
+});
 
 userSchema.plugin(passportLocalMongoose);
 const User = mongoose.model("User", userSchema);
@@ -94,12 +103,24 @@ app.post("/signup", (req, res) => {
     req.body.password
     User.register(new User({
         username : req.body.username,
-    }), req.body.password, (err, user) => {
+        status : req.body.type,
+        detail : {
+            firstName : req.body.firstName,
+            lastName  : req.body.lastName,
+            age       : req.body.age,
+            education : req.body.education,
+            major     : req.body.major
+        }
+        }
+    
+    ), req.body.password, (err, user) => {
         if(err){
             console.log(err);
-            return res.render('signup');
+            return res.render('signup', {
+                errormessage: err
+            });
         }
-        passport.authenticate('local')(req, res, function (){
+        passport.authenticate('local')(req, res, () => {
             res.redirect("/signin")
         });
     }
@@ -119,13 +140,20 @@ app.post("/feature", (req, res) => {
     res.redirect("/feature")
 });
 
-// Login Page
+// After user logged in
 // ========================================
 
 app.get("/signin", checkAuthenticated ,(req, res) => {
     res.render("signin")
 });
 
+// Logout 
+// ========================================================
+
+app.get("/logout", (req, res) => {
+    req.logout();
+    res.redirect("/")
+});
 
 
 // Middleware to prevent user from visiting pages that need login
@@ -137,8 +165,6 @@ function checkAuthenticated (req, res, next) {
     }
     res.redirect("/signup")
 }
-
-
 
 
 // port setup
