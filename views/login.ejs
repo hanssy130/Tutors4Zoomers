@@ -1,9 +1,18 @@
-<%- include("partials/header") -%>
-<title>Login</title>
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta
+      charset="UTF-8"
+      name="viewport"
+      content="width=device-width,initial-scale=1"
+    />
+    <title>Login | Tutors4Zoomers</title>
+    <link rel="icon" href="./resources/favicon.png" />
+    <link rel="stylesheet" type="text/css" href="login.css" />
 </head>
+
 <body>
 
-    <%- include("partials/navbar.ejs") -%>
 
     <div class="d-flex justify-content-center align-items-center login-container">
         <form class="login-form text-center" action="/login" method="POST">
@@ -16,7 +25,10 @@
             <button type="submit" class="btn mt-4 rounded-pill btn-lg btn-custom btn-block text-uppercase">Login</button>
         </form>
     </div>
+  
+</head>
 
+  <body>
 
 
 <%- include("partials/footer") -%>

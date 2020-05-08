@@ -83,6 +83,10 @@ app.get("/", (req, res) => {
 // Login Page
 // ======================================
 
+app.get("/login", (req, res) => {
+    res.render("login")
+})
+
 app.post('/login', passport.authenticate("local", {
     successRedirect: "/signin",
     failureRedirect: "/signup"
@@ -131,14 +135,6 @@ app.post("/signup", (req, res) => {
 // app.get("/login", (req, res) => res.render("pages/login"));
 // app.get("/signup", (req, res) => res.render("pages/signup"));
 
-// George's Feature page
-app.get("/feature", (req, res) => {
-    res.render("/feature")
-});
-
-app.post("/feature", (req, res) => {
-    res.redirect("/feature")
-});
 
 // After user logged in
 // ========================================
@@ -164,7 +160,10 @@ function checkAuthenticated (req, res, next) {
         return next()
     }
     else{
-    res.redirect("/signup")}
+    res.render("signup", {
+        errorMessage: "No account found"
+    })
+    }
 }
 
 // port setup
