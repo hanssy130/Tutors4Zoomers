@@ -1,4 +1,5 @@
-<<<<<<< HEAD
+// George #1
+
 const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
@@ -82,14 +83,6 @@ app.get("/", (req, res) => {
 // Login Page
 // ======================================
 
-=======
-// Uses Heroku's port or local port 5000.
-var PORT = process.env.PORT || 5000;
->>>>>>> 0db3453faa0194f297203fce6cefff0f7a98cd7d
-
-const express = require("express");
-
-<<<<<<< HEAD
 app.post('/login', passport.authenticate("local", {
     successRedirect: "/signin",
     failureRedirect: "/signup"
@@ -133,24 +126,15 @@ app.post("/signup", (req, res) => {
     }
     )
 });
-=======
-let app = express();
-app.use(express.urlencoded({ extended: true }));
-app.use(express.static("public"));
-app.set("view engine", "ejs");
 
-app.get("/", (req, res) => res.render("pages/index"));
->>>>>>> 0db3453faa0194f297203fce6cefff0f7a98cd7d
+// Hans' login/singup pages
+// app.get("/login", (req, res) => res.render("pages/login"));
+// app.get("/signup", (req, res) => res.render("pages/signup"));
 
-app.get("/login", (req, res) => res.render("pages/login"));
-
-app.get("/signup", (req, res) => res.render("pages/signup"));
-
-<<<<<<< HEAD
+// George's Feature page
 app.get("/feature", (req, res) => {
     res.render("/feature")
 });
-
 
 app.post("/feature", (req, res) => {
     res.redirect("/feature")
@@ -171,7 +155,6 @@ app.get("/logout", (req, res) => {
     res.redirect("/")
 });
 
-
 // Middleware to prevent user from visiting pages that need login
 // ==============================================================
 
@@ -184,22 +167,10 @@ function checkAuthenticated (req, res, next) {
     res.redirect("/signup")}
 }
 
-
 // port setup
 // ==========================================
-
-let port = 3001
+var port = process.env.PORT || 3001
 
 app.listen(port, ()=> {
     console.log("Server has started ")
 });
-=======
-app.get("/portal", (req, res) => res.render("pages/portal"));
-
-app.get("/session/:roomCode", (req, res) => {
-  let roomCode = req.params.roomCode;
-  res.render("pages/session");
-});
-
-app.listen(PORT);
->>>>>>> 0db3453faa0194f297203fce6cefff0f7a98cd7d
