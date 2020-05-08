@@ -47,6 +47,7 @@ app.use(passport.session());
 const userDetail = new mongoose.Schema({
     firstName   : String,
     lastName    : String,
+    email       : String,
     age         : String,
     education   : String,
     major       : String,
@@ -95,7 +96,9 @@ app.post('/login', passport.authenticate("local", {
 // =====================================
 
 app.get("/signup", (req, res) => {
-    res.render("signup");
+    res.render("signup", {
+        errorMessage: ""
+    });
 });
 
 app.post("/signup", (req, res) => {
@@ -108,6 +111,7 @@ app.post("/signup", (req, res) => {
             firstName : req.body.firstName,
             lastName  : req.body.lastName,
             age       : req.body.age,
+            email     : req.body.email,
             education : req.body.education,
             major     : req.body.major
         }
@@ -115,9 +119,8 @@ app.post("/signup", (req, res) => {
     
     ), req.body.password, (err, user) => {
         if(err){
-            console.log(err);
             return res.render('signup', {
-                errormessage: err
+                errorMessage: "A user with the given username is already registered"
             });
         }
         passport.authenticate('local')(req, res, () => {
@@ -160,10 +163,12 @@ app.get("/logout", (req, res) => {
 // ==============================================================
 
 function checkAuthenticated (req, res, next) {
+    message = ""
     if (req.isAuthenticated()){
         return next()
     }
-    res.redirect("/signup")
+    else{
+    res.redirect("/signup")}
 }
 
 

@@ -7,7 +7,7 @@
 
     <%- include("partials/navbar.ejs") -%>
     <div>
-        <p class="text-center"></p>
+        <p class="text-center"><%= errorMessage %> </p>
     </div>
 
     <div class="d-flex justify-content-center align-items-center login-container">
@@ -18,6 +18,9 @@
           <div class="form-group">
               <input type="password" name="password" class="form-control rounded-pill form-control-lg" placeholder="Password" required>
           </div>
+          <div class="form-group">
+            <input type="email" name="email" class="form-control rounded-pill form-control-lg" placeholder="Email" required>
+        </div>
           <div class="form-group">
             <input type="text" name="firstName" class="form-control rounded-pill form-control-lg" placeholder="First Name" required>
         </div>
