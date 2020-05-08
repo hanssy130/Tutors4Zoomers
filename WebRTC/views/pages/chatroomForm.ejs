@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebRTC Chatroom Form</title>
+</head>
+<body>
+    <form method="post" action="/chatroomForm">
+        <input type="text" name="roomName">
+        <input type="submit">
+    </form>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
+    <script>
+        let socket = io.connect('http://localhost:3000/chatroomForm');
+        socket.on("connect", () => {
+            socket.emit(prompt())
+        })
+    </script>
+</body>
+</html>
