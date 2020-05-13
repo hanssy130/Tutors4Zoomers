@@ -60,6 +60,18 @@ passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
+// Initialize Socket
+// ======================================
+var port = process.env.PORT || 3001;
+const server = app.listen(port, () => {
+  console.log("Server has started.");
+});
+var port = process.env.PORT || 3001;
+
+const socket = require("socket.io");
+const io = socket(server);
+io.sockets.on("connection", newConnection);
+
 // Landing Page
 // ======================================
 app.get("/", (req, res) => {
@@ -150,10 +162,56 @@ function checkAuthenticated(req, res, next) {
   }
 }
 
+// Socket
+// ==========================================
+function newConnection(socket) {
+  console.log("New connection: " + socket.id);
+  socket.on("mouse", mouseMsg);
+  socket.on("line", lineMsg);
+  socket.on("colour", colourUpdate);
+  socket.on("clear", clearCanvas);
+  socket.on("lineLengths", updateLinesLength);
+  socket.on("lineArray", updateLineArray);
+  socket.on("delete", tester);
+  socket.on("weight", updateWeight);
+  function tester() {
+    socket.broadcast.emit("delete");
+  }
+  function updateLinesLength(data) {
+    // send data back out to others
+    socket.broadcast.emit("lineLengths", data);
+  }
+  function updateLineArray(data) {
+    // send data back out to others
+    socket.broadcast.emit("lineArray", data);
+  }
+  function mouseMsg(data) {
+    // send data back out to others
+    socket.broadcast.emit("mouse", data);
+    console.log(data);
+  }
+  function lineMsg(data) {
+    // send data back out to others
+    socket.broadcast.emit("line", data);
+  }
+  function colourUpdate(data) {
+    // send data back out to others
+    socket.broadcast.emit("colour", data);
+  }
+  function clearCanvas(data) {
+    // send data back out to others
+    socket.broadcast.emit("clear", data);
+  }
+  function updateWeight(data) {
+    // send data back out to others
+    socket.broadcast.emit("weight", data);
+  }
+}
+
 // Port Setup
 // ==========================================
-var port = process.env.PORT || 3001;
+// var port = process.env.PORT || 3001;
 
-app.listen(port, () => {
-  console.log("Server has started ");
-});
+// app.listen(port, () => {
+//   console.log("Server has started ");
+// });

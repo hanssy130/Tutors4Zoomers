@@ -6,7 +6,9 @@
       name="viewport"
       content="width=device-width,initial-scale=1"
     />
-    <title>Login | Tutors4Zoomers</title>
+    <title>Open Session | Tutors4Zoomers</title>
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.0.0/lib/p5.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.5/socket.io.min.js"></script>
 
     <style>
       body {
@@ -32,11 +34,16 @@
 
   <body>
     <div id="form">
-      <p>This is a unique session, where we can integrate our applications.</p>
-      <br />
-      <p>We plan on integrating video, voice, and text communication here.</p>
-      <br />
-      <p>We plan to add a whiteboard feature as well.</p>
+      <div id="colourBox">
+        <button class="colours" id="red">RED</button>
+        <button class="colours" id="yellow">YELLOW</button>
+        <button class="colours" id="black">BLACK</button>
+      </div>
+      <button id="eraser">ERASER</button><br />
+      <button id="small">SMALL</button>
+      <button id="regular">REGULAR</button>
+      <button id="large">LARGE</button>
+      <script src="/sketch.js"></script>
     </div>
   </body>
 </html>
