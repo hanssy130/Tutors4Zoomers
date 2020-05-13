@@ -3,16 +3,33 @@ let express = require('express');
 // make the function
 let app = express();
 // listen on port 3000
-let server = app.listen(3000);
+let http = require("http").Server(app).listen(3000);
+let upload = require('express-fileupload');
 // app should host in the directory 'public'
 app.use(express.static('public'));
+app.use(upload());
 console.log("server is running");
 let socket = require('socket.io');
 
 // io will store messages from/to server.js
-let io = socket(server);
+let io = socket(http);
 
 io.sockets.on('connection', newConnection);
+
+app.post("/images", function (req, res) {
+    if(req.files){
+        let file = req.files.filename;
+        let filename = file.name;
+        file.mv("./public/images/" + filename, function (err) {
+            if (err) {
+                console.log(err);
+                res.send("error fam");
+            } else {
+                res.send("done");
+            }
+        })
+    }
+});
 
 function newConnection(socket) {
     console.log('new connection: ' + socket.id);

@@ -115,12 +115,7 @@ function LineObject(x,y,px,py,weight){
     return lineOutput;
 }
 
-function mouseDragged() {
-    // uses the current coords of the mouse and previous coords to make a line
-    LineObject(mouseX, mouseY, pmouseX, pmouseY, currentWeight);
-    stroke(currentColour);
-
-    // a data structure to send data to other computers
+function sendMouseData() {
     let coord = {
         x: mouseX,
         y: mouseY,
@@ -138,6 +133,19 @@ function mouseDragged() {
     //console.log(coord);
     // send the coords to other users
     socket.emit('line', coord);
+}
+
+function mousePressed() {
+    LineObject(mouseX, mouseY, mouseX, mouseY, currentWeight);
+    stroke(currentColour);
+    sendMouseData();
+}
+function mouseDragged() {
+    // uses the current coords of the mouse and previous coords to make a line
+    LineObject(mouseX, mouseY, pmouseX, pmouseY, currentWeight);
+    stroke(currentColour);
+
+    sendMouseData();
 }
 
 function mouseReleased(){
@@ -231,4 +239,8 @@ document.getElementById("regular").addEventListener("click", function(){
 document.getElementById("large").addEventListener("click", function(){
     currentWeight = 7;
     socket.emit('weight', currentWeight);
+});
+
+$(document).ready(function() {
+    $("#colourBox").css("background-color","yellow");
 });
