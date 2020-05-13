@@ -66,7 +66,6 @@ var port = process.env.PORT || 3001;
 const server = app.listen(port, () => {
   console.log("Server has started.");
 });
-var port = process.env.PORT || 3001;
 
 const socket = require("socket.io");
 const io = socket(server);
