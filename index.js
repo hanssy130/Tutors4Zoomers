@@ -60,17 +60,6 @@ passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
-// Initialize Socket
-// ======================================
-var port = process.env.PORT || 3001;
-const server = app.listen(port, () => {
-  console.log("Server has started.");
-});
-
-const socket = require("socket.io");
-const io = socket(server);
-io.sockets.on("connection", newConnection);
-
 // Landing Page
 // ======================================
 app.get("/", (req, res) => {
@@ -161,6 +150,18 @@ function checkAuthenticated(req, res, next) {
   }
 }
 
+// Port Setup
+// ==========================================
+var port = process.env.PORT || 3001;
+
+const server = app.listen(port, () => {
+  console.log("Server has started ");
+});
+
+const socket = require("socket.io");
+const io = socket(server);
+io.sockets.on("connection", newConnection);
+
 // Socket
 // ==========================================
 function newConnection(socket) {
@@ -206,11 +207,3 @@ function newConnection(socket) {
     socket.broadcast.emit("weight", data);
   }
 }
-
-// Port Setup
-// ==========================================
-// var port = process.env.PORT || 3001;
-
-// app.listen(port, () => {
-//   console.log("Server has started ");
-// });
