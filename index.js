@@ -140,12 +140,12 @@ app.get("/signin", checkAuthenticated, (req, res) => {
   res.render("signin");
 });
 
-app.get("/profile", checkAuthenticated, (req, res) => {
+app.get("/userprofile", checkAuthenticated, (req, res) => {
   userID = req.user;
-  res.render("profile", { user: userID });
+  res.render("userprofile", { user: userID });
 });
 
-app.put("/profileUpdate", checkAuthenticated, (req, res) => {
+app.put("/userprofileUpdate", checkAuthenticated, (req, res) => {
   userID = req.user._id;
 
   User.findByIdAndUpdate(
@@ -157,7 +157,7 @@ app.put("/profileUpdate", checkAuthenticated, (req, res) => {
       if (err) {
         res.send("failed");
       } else {
-        res.redirect("/profile");
+        res.redirect("/userprofile");
       }
     }
   );
