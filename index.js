@@ -10,6 +10,7 @@ const passportLocalMongoose = require("passport-local-mongoose");
 // Initialize Express
 // =========================================
 const app = express();
+const server = require("http").Server(app);
 
 // Initalize view engine and body parser
 // =========================================
@@ -154,7 +155,7 @@ function checkAuthenticated(req, res, next) {
 // ==========================================
 var port = process.env.PORT || 3001;
 
-const server = app.listen(port, () => {
+server.listen(port, () => {
   console.log("Server has started ");
 });
 
