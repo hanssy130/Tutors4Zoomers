@@ -28,6 +28,16 @@ app.get("/chatroom", (req, res) => {
     res.render("pages/chatroom.ejs")
 })
 
-app.listen(port, () => {
+io.sockets.on("connection", (socket) => {
+    socket.on("test", (test) => {
+        console.log(test);
+    })
+})
+
+// io.sockets.on("connection", (socket) => {
+//     console.log("This is working!")
+// })
+
+http.listen(port, () => {
     console.log(`App listening at http://localhost:${port}`);
 });

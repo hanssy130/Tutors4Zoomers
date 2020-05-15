@@ -3,8 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WebRTC Chatroom</title>
     <link rel="stylesheet" href="chatroom.css">
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
+    <title>WebRTC Chatroom</title>
 </head>
 <body>
     <h1>Tutors4Zoomers Chat</h1>
@@ -16,7 +18,20 @@
         <button id="callButton">Call</button>
         <button id="endButton">Hang up</button>
     </div>
+
+    <div>
+        <div id="conversation"></div>
+        <input type="text">
+        <input id="sendData" type="button" value="Send">
+    </div>
+
     <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
     <script src="chatroom.js"></script>
+    <script>
+        let socket = io();
+        socket.on("connect", () => {
+            socket.emit("addUser", prompt("Hello! What is your name?"));
+        });
+    </script>
 </body>
 </html>
