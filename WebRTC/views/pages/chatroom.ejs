@@ -10,8 +10,9 @@
 </head>
 <body>
     <h1>Tutors4Zoomers Chat</h1>
-    <video id="localVideo" autoplay playsinline></video>
-    <video id="remoteVideo" autoplay playsinline></video>
+    <div id="videoContainer"></div>
+<!--    <video id="localVideo" autoplay playsinline></video>-->
+<!--    <video id="remoteVideo" autoplay playsinline></video>-->
 
     <div>
         <button id="startButton">Start</button>
@@ -21,17 +22,74 @@
 
     <div>
         <div id="conversation"></div>
-        <input type="text">
-        <input id="sendData" type="button" value="Send">
+        <input id="msg" type="text">
+        <input id="sendMsg" type="button" value="Send">
+    </div>
+
+    <div>
+        <p>Online</p>
+        <div id="onlineUser"></div>
     </div>
 
     <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
-    <script src="chatroom.js"></script>
+<!--    <script src="chatroom.js"></script>-->
     <script>
         let socket = io();
         socket.on("connect", () => {
             socket.emit("addUser", prompt("Hello! What is your name?"));
         });
+
+        socket.on("updateChat", (username, data) => {
+            $("#conversation").append("<b>" + username + "</b>" + data + "</br>");
+        })
+
+        socket.on("updateStatus", (userList) => {
+            let onlineStatus = $("#onlineUser");
+            document.getElementById("onlineUser").innerHTML = "";
+            for(let i = 0; i < userList.length; i++) {
+                onlineStatus.append("<b>" + userList[i] + "</b></br>");
+            }
+        })
+
+        socket.on("connectVideo", (username) => {
+            let videoId = "localVideo" + username
+            // $("#videoContainer").append("<video id=" + videoId + " autoplay playsinline></video>")
+
+            const mediaStreamConstraints = {
+                video: true,
+                // audio: true,
+            };
+            const localVideo = document.getElementById(videoId);
+            let localStream;
+            function gotLocalMediaStream(mediaStream) {
+                localStream = mediaStream;
+                localVideo.srcObject = mediaStream;
+            }
+
+            function handleLocalMediaStreamError(error) {
+                console.log('navigator.getUserMedia error: ', error);
+            }
+
+            navigator.mediaDevices.getUserMedia(mediaStreamConstraints)
+                .then(gotLocalMediaStream).catch(handleLocalMediaStreamError)
+
+        })
+
+        socket.on("updateVideo", (userList) => {
+            document.getElementById("videoContainer").innerHTML = "";
+            for(let i = 0; i < userList.length; i++) {
+                let videoId = "localVideo" + userList[i];
+                $("#videoContainer").append("<video id=" + videoId + " autoplay playsinline></video>")
+            }
+        })
+
+        $(() => {
+            $("#sendMsg").click(() => {
+                let msg = $("#msg").val();
+                $("#msg").val("");
+                socket.emit("sendChat", msg);
+            })
+        })
     </script>
 </body>
 </html>

@@ -10,6 +10,7 @@ const io = require("socket.io")(http);
 const port = 3000;
 
 let roomName = [];
+let user = [];
 
 app.get("/", (req, res) => res.render("pages/chatroom.ejs"));
 app.get("/chatroomForm", (req, res) => {
@@ -28,15 +29,28 @@ app.get("/chatroom", (req, res) => {
     res.render("pages/chatroom.ejs")
 })
 
-io.sockets.on("connection", (socket) => {
-    socket.on("test", (test) => {
-        console.log(test);
+io.on("connection", (socket) => {
+    socket.on("addUser", (username) => {
+        console.log(username);
+        socket.username = username;
+        user.push(username);
+        io.emit("updateChat", socket.username, " has joined")
+        io.emit("updateStatus", user)
+        io.emit("updateVideo", user);
+        io.emit("connectVideo", socket.username)
+        // console.log(user);
+    })
+    socket.on("sendChat", (msg) => {
+        console.log(msg)
+        io.emit("updateChat", socket.username, ": " + msg)
+    })
+    socket.on("disconnect", ()=> {
+        let index = user.indexOf(socket.username)
+        user.splice(index, 1);
+        io.emit("updateStatus", user)
     })
 })
 
-// io.sockets.on("connection", (socket) => {
-//     console.log("This is working!")
-// })
 
 http.listen(port, () => {
     console.log(`App listening at http://localhost:${port}`);
