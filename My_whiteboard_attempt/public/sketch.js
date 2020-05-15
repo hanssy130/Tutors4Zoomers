@@ -11,8 +11,6 @@ let imgURl;
 function setup() {
     canvas = createCanvas(400, 400);
     canvas.id("wb");
-    // set background to black
-    // let img = loadImage('./images/bruh_pepe.jpg');
     lineArray = [];
     socket = io.connect('http://localhost:3000/');
     socket.on('line', newLines);
