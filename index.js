@@ -4,6 +4,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const passport = require("passport");
+const methodOverride = require("method-override");
 const LocalStrategy = require("passport-local");
 const passportLocalMongoose = require("passport-local-mongoose");
 
@@ -17,6 +18,7 @@ const server = require("http").Server(app);
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(__dirname + "/public"));
+app.use(methodOverride("_method"));
 
 // Initialize Mongoose
 // =========================================
@@ -24,7 +26,7 @@ const dbUsername = "gyang";
 const dbPassword = "123123123";
 mongoose.connect(
   `mongodb+srv://${dbUsername}:${dbPassword}@cluster0-p9khr.mongodb.net/T4Z`,
-  { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: true }
+  { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false }
 );
 
 // Initialize Passport
@@ -70,13 +72,21 @@ app.get("/", (req, res) => {
 // Login Page
 // ======================================
 app.get("/login", (req, res) => {
-  res.render("login");
+  res.render("login", {
+    errorMessage: "",
+  });
+});
+
+app.get("/faillogin", (req, res) => {
+  res.render("login", {
+    errorMessage: "Invalid username or password",
+  });
 });
 app.post(
   "/login",
   passport.authenticate("local", {
     successRedirect: "/signin",
-    failureRedirect: "/signup",
+    failureRedirect: "/faillogin",
   }),
   (req, res) => {}
 );
@@ -120,7 +130,7 @@ app.post("/signup", (req, res) => {
 
 // Tutoring Sessions
 // ========================================
-app.get("/session/:sessionID", (req, res) => {
+app.get("/session/:sessionID/", (req, res) => {
   let sessionID = req.params.sessionID;
   res.render("session");
 });
@@ -130,6 +140,40 @@ app.get("/session/:sessionID", (req, res) => {
 app.get("/signin", checkAuthenticated, (req, res) => {
   res.render("signin");
 });
+
+app.get("/userprofile", checkAuthenticated, (req, res) => {
+  userID = req.user;
+  res.render("userprofile", { user: userID });
+});
+
+app.put("/userprofileUpdate", checkAuthenticated, (req, res) => {
+  userID = req.user._id;
+
+  User.findByIdAndUpdate(
+    userID,
+    { "status" : req.body.type,
+      "detail": req.body.detail 
+    },
+    (err, updatedUser) => {
+      if (err) {
+        res.send("failed");
+      } else {
+        res.redirect("/userprofile");
+      }
+    }
+  );
+});
+
+app.delete("/destoryprofile", checkAuthenticated, (req, res) => {
+  User.findByIdAndDelete(req.user._id, (err) => {
+    if(err){
+      console.log(err)
+    } else {
+      res.redirect("/")
+    }
+  })
+  
+})
 
 // Logout
 // =========================================
@@ -141,12 +185,11 @@ app.get("/logout", (req, res) => {
 // Middleware to prevent user from visiting pages that need login
 // ==========================================
 function checkAuthenticated(req, res, next) {
-  message = "";
   if (req.isAuthenticated()) {
     return next();
   } else {
-    res.render("signup", {
-      errorMessage: "No account found",
+    res.render("login", {
+      errorMessage: "Invalid Username and Password",
     });
   }
 }
