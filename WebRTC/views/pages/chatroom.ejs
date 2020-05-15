@@ -51,28 +51,29 @@
             }
         })
 
-        socket.on("connectVideo", (username) => {
-            let videoId = "localVideo" + username
-            // $("#videoContainer").append("<video id=" + videoId + " autoplay playsinline></video>")
+        socket.on("connectVideo", (userList) => {
+            for(let i = 0; i < userList.length; i++) {
+                let videoId = "localVideo" + userList[i];
 
-            const mediaStreamConstraints = {
-                video: true,
-                // audio: true,
-            };
-            const localVideo = document.getElementById(videoId);
-            let localStream;
-            function gotLocalMediaStream(mediaStream) {
-                localStream = mediaStream;
-                localVideo.srcObject = mediaStream;
+                const mediaStreamConstraints = {
+                    video: true,
+                    // audio: true,
+                };
+                const localVideo = document.getElementById(videoId);
+                let localStream;
+                function gotLocalMediaStream(mediaStream) {
+                    localStream = mediaStream;
+                    localVideo.srcObject = mediaStream;
+                }
+
+                function handleLocalMediaStreamError(error) {
+                    console.log('navigator.getUserMedia error: ', error);
+                }
+
+                navigator.mediaDevices.getUserMedia(mediaStreamConstraints)
+                    .then(gotLocalMediaStream).catch(handleLocalMediaStreamError)
+
             }
-
-            function handleLocalMediaStreamError(error) {
-                console.log('navigator.getUserMedia error: ', error);
-            }
-
-            navigator.mediaDevices.getUserMedia(mediaStreamConstraints)
-                .then(gotLocalMediaStream).catch(handleLocalMediaStreamError)
-
         })
 
         socket.on("updateVideo", (userList) => {

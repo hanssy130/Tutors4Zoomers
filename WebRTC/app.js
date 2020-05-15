@@ -37,7 +37,7 @@ io.on("connection", (socket) => {
         io.emit("updateChat", socket.username, " has joined")
         io.emit("updateStatus", user)
         io.emit("updateVideo", user);
-        io.emit("connectVideo", socket.username)
+        io.emit("connectVideo", user)
         // console.log(user);
     })
     socket.on("sendChat", (msg) => {
