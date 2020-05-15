@@ -10,25 +10,28 @@ app.use(express.static('public'));
 app.use(upload());
 console.log("server is running");
 let socket = require('socket.io');
-
 // io will store messages from/to server.js
 let io = socket(http);
 
 io.sockets.on('connection', newConnection);
 
-app.post("/images", function (req, res) {
+app.post("/", function (req, res) {
     if(req.files){
         let file = req.files.filename;
         let filename = file.name;
+        console.log(file);
         file.mv("./public/images/" + filename, function (err) {
             if (err) {
                 console.log(err);
                 res.send("error fam");
             } else {
-                res.send("done");
+                console.log("image uploaded");
+                io.sockets.emit('updateImg', filename);
             }
         })
     }
+    //res.end();
+    res.status(204).send();
 });
 
 function newConnection(socket) {
@@ -82,4 +85,6 @@ function newConnection(socket) {
         // send data back out to others
         socket.broadcast.emit('weight',data);
     }
+
+
 }

@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <script src="https://cdn.jsdelivr.net/npm/p5@1.0.0/lib/p5.min.js"></script>
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
     <title>Title</title>
 </head>
 <body>
@@ -18,11 +19,14 @@
 <button id="small">SMALL</button>
 <button id="regular">REGULAR</button>
 <button id="large">LARGE</button>
-<form method="post" enctype="multipart/form-data" action="/images">
-    <input type="file" name="filename">
-    <input type="submit" name="upload">
+<form method="post" enctype="multipart/form-data" action="/" >
+    <input type="file" name="filename" id="fileUp" >
+    <input type="submit" name="upload" id="submit">
 </form>
-<script src="sketch.js"></script>
+
 
 </body>
+
+<link rel="stylesheet" href="style.css">
+<script src="sketch.js"></script>
 </html>

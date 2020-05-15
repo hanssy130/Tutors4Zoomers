@@ -1,47 +1,3 @@
-// let socket;
-// let points;
-// let lines;
-// function setup() {
-//     let canvas = createCanvas(400, 300);
-//     background(51);
-//     strokeWeight(6);
-//     noFill();
-//     // declare the points as an array
-//     points = [];
-//     lines = [];
-//     socket = io.connect('http://localhost:3000/');
-//     socket.on('mouse', newDrawing);
-// }
-//
-// function newDrawing(data) {
-//     // add the received points to the array
-//     points.push(data);
-// }
-//
-// function draw() {
-//     beginShape();
-//     for(let place in points) {
-//         console.log("drawing");
-//         // grab the point by index
-//         var point = points[place];
-//         // draw a line between these points
-//         let line = curveVertex(point.x, point.y);
-//         lines.push(line);
-//     }
-//     endShape();
-// }
-// // save the drawing
-// function mouseDragged(){
-//     console.log(mouseX + ' ' + mouseY);
-//     let point = {
-//         x: mouseX,
-//         y: mouseY
-//     };
-//     // send the data named mouse
-//     points.push(point);
-//     socket.emit('mouse', point);
-//     //points = [];
-// }
 
 let socket;
 let lineArray;
@@ -51,11 +7,12 @@ let currentWeight = 5;
 let linesLength = [];
 let lineCount = 0;
 let lines = [];
+let imgURl;
 function setup() {
     canvas = createCanvas(400, 400);
-    canvas.id('myCanvas');
+    canvas.id("wb");
     // set background to black
-    background(51);
+    // let img = loadImage('./images/bruh_pepe.jpg');
     lineArray = [];
     socket = io.connect('http://localhost:3000/');
     socket.on('line', newLines);
@@ -65,6 +22,7 @@ function setup() {
     socket.on('lineArray', updateLineArray);
     socket.on('delete', deleteNewest);
     socket.on('weight', updateWeightLocal);
+    socket.on('updateImg', updateImgOnline);
 }
 
 function updateWeightLocal(data) {
@@ -100,7 +58,6 @@ function updateColour(data) {
 function clearCanvas(data) {
     console.log(data);
     canvas.clear();
-    background(51);
 }
 
 function draw()
@@ -176,6 +133,11 @@ function reDrawCanvas() {
         LineObject(data.x, data.y, data.px,data.py, data.weight);
         stroke(data.color);
     }
+
+        let myCanvas = document.getElementById("wb");
+        // myCanvas.style.background = "url('https://www.enchantedlearning.com/generate/thumbnails/multiply-1-1-6.gif')";
+        // myCanvas.style.backgroundSize = "100% 100%";
+        myCanvas.style.backgroundColor = "white";
 }
 
 
@@ -221,7 +183,8 @@ document.getElementById("black").addEventListener("click", function(){
 
 //change to eraser
 document.getElementById("eraser").addEventListener("click", function(){
-    currentColour = 51;
+    currentColour = 'white';
+
     socket.emit('colour', currentColour);
 });
 
@@ -241,6 +204,29 @@ document.getElementById("large").addEventListener("click", function(){
     socket.emit('weight', currentWeight);
 });
 
-$(document).ready(function() {
-    $("#colourBox").css("background-color","yellow");
-});
+function updateImg(data) {
+        let names = document.getElementById('fileUp');
+        console.log(names.files.item(0).name);
+        let url = names.files.item(0).name;
+        let img = "http://localhost:3000/images/" + url;
+        console.log(img);
+        let myCanvas = document.getElementById("wb");
+        imgURl = 'https://www.enchantedlearning.com/generate/thumbnails/multiply-1-1-6.gif';
+        myCanvas.style.background = "url('https://www.enchantedlearning.com/generate/thumbnails/multiply-1-1-6.gif')";
+        myCanvas.style.backgroundSize = "100% 100%";
+        // let image = loadImage('https://d1i4t8bqe7zgj6.cloudfront.net/09-28-2016/t_1475094050758_name_pepe.jpg');
+        // //canvas.drawingContext.globalCompositeOperation = 'destination-over';
+        // background(image);
+        console.log("bruh it worked?!");
+}
+
+function updateImgOnline(){
+    let myCanvas = document.getElementById("wb");
+    imgURl = 'https://www.enchantedlearning.com/generate/thumbnails/multiply-1-1-6.gif';
+    myCanvas.style.background = "url('https://www.enchantedlearning.com/generate/thumbnails/multiply-1-1-6.gif')";
+    myCanvas.style.backgroundSize = "100% 100%";
+    // let image = loadImage('https://d1i4t8bqe7zgj6.cloudfront.net/09-28-2016/t_1475094050758_name_pepe.jpg');
+    // //canvas.drawingContext.globalCompositeOperation = 'destination-over';
+    // background(image);
+    console.log("bruh it worked?! ONLINE");
+}
