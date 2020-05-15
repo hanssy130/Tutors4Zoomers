@@ -1,11 +1,25 @@
 <%- include("partials/header") -%>
-<title>User Account Page</title>
+<title>Signed In | Tutors4Zoomers</title>
 </head>
 
 <body>
 
-<h1>You are now logged in</h1>
-<h1>Coming Soon</h1>
-<button><a href="/logout">Logout</a></button>
+<%- include("partials/loginNav.ejs") -%>
+
+<div id="landingphoto">
+    <img src="./resources/landingphotoedited.png" width="1000px" />
+  </div>
+  <center>
+    <h1>You are now logged in</h1>
+    <br />
+      <button class="portalbutton">Book a tutor</button>
+    <br /><br />
+    <form action="/session/hanssy">
+    <button class="portalbutton">Open a tutoring session</button>
+  </form>
+  <br /><br />
+    <button><a href="/logout">Logout</a></button>  
+</center>
+
 
 <%- include("partials/footer") -%>

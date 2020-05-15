@@ -1,18 +1,20 @@
 {
-  "name": "test",
+  "name": "tutors4zoomers_web_application",
   "version": "1.0.0",
   "description": "Our application is a portal for users to connect with volunteer tutors or students. We want to inspire our communities to volunteer their time to help students in need during COVID-19. Our application features tutor registration, booking lessons, collaborative whiteboarding, and online communication via video and/or text messaging.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
   },
-  "author": "",
+  "author": "Tutors4Zoomers",
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.19.0",
     "ejs": "^3.1.2",
     "express": "^4.17.1",
     "express-session": "^1.17.1",
+    "method-override": "^3.0.0",
     "mongoose": "^5.9.11",
     "passport": "^0.4.1",
     "passport-local": "^1.0.0",

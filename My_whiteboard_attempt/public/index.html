@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <script src="https://cdn.jsdelivr.net/npm/p5@1.0.0/lib/p5.min.js"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
     <title>Title</title>
 </head>
 <body>
@@ -17,7 +19,14 @@
 <button id="small">SMALL</button>
 <button id="regular">REGULAR</button>
 <button id="large">LARGE</button>
-<script src="sketch.js"></script>
+<form method="post" enctype="multipart/form-data" action="/" >
+    <input type="file" name="filename" id="fileUp" >
+    <input type="submit" name="upload" id="submit">
+</form>
+
 
 </body>
+
+<link rel="stylesheet" href="style.css">
+<script src="sketch.js"></script>
 </html>
