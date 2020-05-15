@@ -66,6 +66,30 @@ footer {
   color: lightblue;
 }
 
+#easteregg {
+  position: absolute;
+  top: 50px;
+  left: 50px;
+  height: 100px;
+  width: 100px;
+  border: 5px solid green;
+  background-color: aqua;
+  visibility: visible;
+  opacity: 0.2;
+}
+
+#egg1 {
+  opacity: 0.5;
+}
+
+.teamImage {
+  width: 250px;
+}
+
+#teamImageHolder {
+  text-align: center;
+}
+
 @media all and (max-width: 400px) {
   /*Mobile View (< 400px)*/
 
