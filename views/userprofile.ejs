@@ -8,7 +8,7 @@
     <%- include("partials/loginNav.ejs") -%>
 
     <div class="d-flex justify-content-center align-items-center login-container">
-        <form class="login-form text-center" action="/profileUpdate?_method=PUT" method="POST">
+        <form class="login-form text-center" action="/userprofileUpdate?_method=PUT" method="POST">
             <div class="form-group">
                 <h5>Email</h5>
                 <input type="email" name="detail[email]" class="form-control rounded-pill form-control-lg" value="<%= user.detail.email %>"
@@ -64,7 +64,7 @@
 
 
 
-    <form action="destoryprofile?_method=DELETE" method="POST">
+    <form action="/destoryprofile?_method=DELETE" method="POST">
         <button>Delete</button>
     </form>
 <%- include("partials/footer") -%>
