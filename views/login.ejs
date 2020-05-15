@@ -1,48 +1,34 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta
-      charset="UTF-8"
-      name="viewport"
-      content="width=device-width,initial-scale=1"
-    />
-    <title>Login | Tutors4Zoomers</title>
-    <link rel="icon" href="./resources/favicon.png" />
-    <link rel="stylesheet" type="text/css" href="login.css" />
-  </head>
 
-  <body>
-    <div
-      class="d-flex justify-content-center align-items-center login-container"
-    >
-      <form class="login-form text-center" action="/login" method="POST">
-        <div class="form-group mt-3">
-          <input
-            type="text"
-            name="username"
-            class="form-control rounded-pill form-control-lg"
-            placeholder="username"
-            required
-          />
-        </div>
-        <div class="form-group">
-          <input
-            type="password"
-            name="password"
-            class="form-control rounded-pill form-control-lg"
-            placeholder="password"
-            required
-          />
-        </div>
-        <button
-          type="submit"
-          class="btn mt-4 rounded-pill btn-lg btn-custom btn-block text-uppercase"
-        >
-          Login
-        </button>
-      </form>
-    </div>
-  </body>
+<head>
+  <meta charset="UTF-8" name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Login | Tutors4Zoomers</title>
+  <link rel="icon" href="./resources/favicon.png" />
+  <link rel="stylesheet" type="text/css" href="login.css" />
+</head>
 
-  <%- include("partials/footer") -%>
+<body>
+
+  <p><%= errorMessage %></p>
+
+  <div class="d-flex justify-content-center align-items-center login-container">
+    <form class="login-form text-center" action="/login" method="POST">
+      <div class="form-group mt-3">
+        <input type="text" name="username" class="form-control rounded-pill form-control-lg" placeholder="username"
+          required />
+      </div>
+      <div class="form-group">
+        <input type="password" name="password" class="form-control rounded-pill form-control-lg" placeholder="password"
+          required />
+      </div>
+      <button type="submit" class="btn mt-4 rounded-pill btn-lg btn-custom btn-block text-uppercase">
+        Login
+      </button>
+    </form>
+  </div>
+</body>
+
+
+
 </html>
