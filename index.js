@@ -21,7 +21,7 @@ server.listen(port, () => {
 });
 
 const socket = require("socket.io");
-const io = socket(server);
+const io = socket.listen(server);
 io.sockets.on("connection", newConnection);
 
 // Initalize view engine and body parser
