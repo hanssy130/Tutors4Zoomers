@@ -13,6 +13,17 @@ const passportLocalMongoose = require("passport-local-mongoose");
 const app = express();
 const server = require("http").Server(app);
 
+// Initialize port
+// ==========================================
+const port = process.env.PORT || 3001;
+server.listen(port, () => {
+  console.log("Server has started ");
+});
+
+const socket = require("socket.io");
+const io = socket(server);
+io.sockets.on("connection", newConnection);
+
 // Initalize view engine and body parser
 // =========================================
 app.set("view engine", "ejs");
@@ -151,9 +162,7 @@ app.put("/userprofileUpdate", checkAuthenticated, (req, res) => {
 
   User.findByIdAndUpdate(
     userID,
-    { "status" : req.body.type,
-      "detail": req.body.detail 
-    },
+    { status: req.body.type, detail: req.body.detail },
     (err, updatedUser) => {
       if (err) {
         res.send("failed");
@@ -166,14 +175,13 @@ app.put("/userprofileUpdate", checkAuthenticated, (req, res) => {
 
 app.delete("/destoryprofile", checkAuthenticated, (req, res) => {
   User.findByIdAndDelete(req.user._id, (err) => {
-    if(err){
-      console.log(err)
+    if (err) {
+      console.log(err);
     } else {
-      res.redirect("/")
+      res.redirect("/");
     }
-  })
-  
-})
+  });
+});
 
 // Logout
 // =========================================
@@ -193,18 +201,6 @@ function checkAuthenticated(req, res, next) {
     });
   }
 }
-
-// Port Setup
-// ==========================================
-var port = process.env.PORT || 3001;
-
-server.listen(port, () => {
-  console.log("Server has started ");
-});
-
-const socket = require("socket.io");
-const io = socket(server);
-io.sockets.on("connection", newConnection);
 
 // Socket
 // ==========================================
