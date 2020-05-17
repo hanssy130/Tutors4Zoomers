@@ -17,7 +17,7 @@ const server = require("http").Server(app);
 // ==========================================
 const PORT = process.env.PORT || 3001;
 console.log(PORT);
-server.listen(PORT, () => {
+server.listen(PORT, "0.0.0.0", () => {
   console.log("Server has started ");
 });
 
