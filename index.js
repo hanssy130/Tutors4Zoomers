@@ -32,14 +32,14 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(__dirname + "/public"));
 app.use(methodOverride("_method"));
 
-// // Initialize Mongoose
-// // =========================================
-// const dbUsername = "gyang";
-// const dbPassword = "123123123";
-// mongoose.connect(
-//   `mongodb+srv://${dbUsername}:${dbPassword}@cluster0-p9khr.mongodb.net/T4Z`,
-//   { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false }
-// );
+// Initialize Mongoose
+// =========================================
+const dbUsername = "gyang";
+const dbPassword = "123123123";
+mongoose.connect(
+  `mongodb+srv://${dbUsername}:${dbPassword}@cluster0-p9khr.mongodb.net/T4Z`,
+  { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false }
+);
 
 // Initialize Passport
 // ==========================================

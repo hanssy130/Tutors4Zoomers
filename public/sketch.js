@@ -12,7 +12,7 @@ function setup() {
   // set background to white
   background(400);
   lineArray = [];
-  socket = io.connect("http://localhost:3001/");
+  socket = io.connect(window.location.hostname);
   socket.on("line", newLines);
   socket.on("colour", updateColour);
   socket.on("clear", clearCanvas);
