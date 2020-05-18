@@ -25,6 +25,7 @@ function setup() {
 function updateWeightLocal(data) {
   currentWeight = data;
 }
+
 function updateLinesLength(data) {
   linesLength = data;
   console.log("update lines length");
