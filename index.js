@@ -24,8 +24,6 @@ server.listen(port, "0.0.0.0", () => {
 const socket = require("socket.io");
 const io = socket.listen(server);
 
-io.sockets.on("connection", newConnection);
-
 // Initalize view engine and body parser
 // =========================================
 app.set("view engine", "ejs");
@@ -141,13 +139,6 @@ app.post("/signup", (req, res) => {
   );
 });
 
-// Tutoring Sessions
-// ========================================
-app.get("/session/:sessionID/", (req, res) => {
-  let sessionID = req.params.sessionID;
-  res.render("session");
-});
-
 // After user logged in
 // ========================================
 app.get("/signin", checkAuthenticated, (req, res) => {
@@ -206,8 +197,9 @@ function checkAuthenticated(req, res, next) {
 
 // Socket
 // ==========================================
-function newConnection(socket) {
-  console.log("New connection: " + socket.id);
+io.on("connection", (socket) => {
+  console.log("new connection: " + socket.id);
+
   socket.on("mouse", mouseMsg);
   socket.on("line", lineMsg);
   socket.on("colour", colourUpdate);
@@ -216,44 +208,65 @@ function newConnection(socket) {
   socket.on("lineArray", updateLineArray);
   socket.on("delete", tester);
   socket.on("weight", updateWeight);
-  function tester() {
-    socket.broadcast.emit("delete");
+
+  socket.on("new-user", (room) => {
+    // joins the user to the room
+    socket.join(room);
+  });
+
+  function tester(room, data) {
+    // send to specific room
+    socket.to(room).broadcast.emit("delete", data);
   }
-  function updateLinesLength(data) {
+
+  function updateLinesLength(room, data) {
     // send data back out to others
-    socket.broadcast.emit("lineLengths", data);
+    // send to specific room
+    socket.to(room).broadcast.emit("lineLengths", data);
   }
-  function updateLineArray(data) {
+
+  function updateLineArray(room, data) {
     // send data back out to others
-    socket.broadcast.emit("lineArray", data);
+    // send to specific room
+    socket.to(room).broadcast.emit("lineArray", data);
   }
-  function mouseMsg(data) {
+
+  function mouseMsg(room, data) {
     // send data back out to others
-    socket.broadcast.emit("mouse", data);
+    // send to specific room
+    socket.to(room).broadcast.emit("mouse", data);
     console.log(data);
   }
-  function lineMsg(data) {
+
+  function lineMsg(room, data) {
     // send data back out to others
-    socket.broadcast.emit("line", data);
+    // send to specific room
+    socket.to(room).broadcast.emit("line", data);
   }
+
   function colourUpdate(data) {
     // send data back out to others
-    socket.broadcast.emit("colour", data);
+    // send to specific room
+    socket.to(room).broadcast.emit("colour", data);
   }
+
   function clearCanvas(data) {
     // send data back out to others
-    socket.broadcast.emit("clear", data);
+    // send to specific room
+    socket.to(room).broadcast.emit("clear", data);
   }
+
   function updateWeight(data) {
     // send data back out to others
-    socket.broadcast.emit("weight", data);
+    // send to specific room
+    socket.to(room).broadcast.emit("weight", data);
   }
-}
+});
 
 // Rooms
 // =============================================
 // list of rooms
-const rooms = { name: {} };
+const rooms = {};
 
 app.get("/session", (req, res) => {
   console.log(rooms);
@@ -277,7 +290,7 @@ app.post("/session/room", (req, res) => {
 app.get("/session/:room", (req, res) => {
   // if rooms doesn't exist return to room list
   if (rooms[req.params.room] == null) {
-    return res.redirect("/");
+    return res.redirect("/session");
   }
   console.log(req.params.room);
   res.render("session", { roomName: req.params.room });

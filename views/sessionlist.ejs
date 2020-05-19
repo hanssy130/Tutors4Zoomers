@@ -17,10 +17,11 @@
       <a href="/session/<%= room%>"> Join</a>
       <% }) %>
     </div>
+
     <form action="/session/room" method="POST">
       <input name="room" type="text" required />
       <button type="submit">New Room</button>
     </form>
   </body>
-  <script src="/index.js"></script>
+  <script src="/sessionlist.js"></script>
 </html>
