@@ -195,6 +195,39 @@ function checkAuthenticated(req, res, next) {
   }
 }
 
+// Rooms
+// =============================================
+// list of rooms
+const rooms = {};
+
+app.get("/session", (req, res) => {
+  console.log(rooms);
+  res.render("sessionlist", { rooms: rooms });
+});
+
+app.post("/session/room", (req, res) => {
+  console.log("added room");
+  // if room exists return to room list
+  if (rooms[req.body.room] != null) {
+    return res.redirect("/");
+  }
+  // add new room
+  rooms[req.body.room] = { users: {} };
+  res.redirect(req.body.room);
+  console.log("redirected");
+  // send message that new room was made
+  io.emit("room-created", req.body.room);
+});
+
+app.get("/session/:room", (req, res) => {
+  // if rooms doesn't exist return to room list
+  if (rooms[req.params.room] == null) {
+    return res.redirect("/session");
+  }
+  console.log(req.params.room);
+  res.render("session", { roomName: req.params.room });
+});
+
 // Socket
 // ==========================================
 io.on("connection", (socket) => {
@@ -244,54 +277,21 @@ io.on("connection", (socket) => {
     socket.to(room).broadcast.emit("line", data);
   }
 
-  function colourUpdate(data) {
+  function colourUpdate(room, data) {
     // send data back out to others
     // send to specific room
     socket.to(room).broadcast.emit("colour", data);
   }
 
-  function clearCanvas(data) {
+  function clearCanvas(room, data) {
     // send data back out to others
     // send to specific room
     socket.to(room).broadcast.emit("clear", data);
   }
 
-  function updateWeight(data) {
+  function updateWeight(room, data) {
     // send data back out to others
     // send to specific room
     socket.to(room).broadcast.emit("weight", data);
   }
-});
-
-// Rooms
-// =============================================
-// list of rooms
-const rooms = {};
-
-app.get("/session", (req, res) => {
-  console.log(rooms);
-  res.render("sessionlist", { rooms: rooms });
-});
-
-app.post("/session/room", (req, res) => {
-  console.log("added room");
-  // if room exists return to room list
-  if (rooms[req.body.room] != null) {
-    return res.redirect("/");
-  }
-  // add new room
-  rooms[req.body.room] = { users: {} };
-  res.redirect(req.body.room);
-  console.log("redirected");
-  // send message that new room was made
-  io.emit("room-created", req.body.room);
-});
-
-app.get("/session/:room", (req, res) => {
-  // if rooms doesn't exist return to room list
-  if (rooms[req.params.room] == null) {
-    return res.redirect("/session");
-  }
-  console.log(req.params.room);
-  res.render("session", { roomName: req.params.room });
 });
