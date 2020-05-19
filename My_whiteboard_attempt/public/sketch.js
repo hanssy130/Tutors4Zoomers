@@ -8,19 +8,21 @@ let linesLength = [];
 let lineCount = 0;
 let lines = [];
 let imgURl;
+const roomContainer = document.getElementById('message-container');
 function setup() {
     canvas = createCanvas(400, 400);
     canvas.id("wb");
     lineArray = [];
     socket = io.connect('http://localhost:3000/');
     socket.on('line', newLines);
-    socket.on('colour', updateColour);
-    socket.on('clear',clearCanvas);
-    socket.on('lineLengths', updateLinesLength);
-    socket.on('lineArray', updateLineArray);
-    socket.on('delete', deleteNewest);
-    socket.on('weight', updateWeightLocal);
-    socket.on('updateImg', updateImgOnline);
+    socket.on('colour',  updateColour);
+    socket.on('clear', clearCanvas);
+    socket.on('lineLengths',  updateLinesLength);
+    socket.on('lineArray',  updateLineArray);
+    socket.on('delete',  deleteNewest);
+    socket.on('weight',  updateWeightLocal);
+    socket.on('updateImg',  updateImgOnline);
+    socket.emit('new-user', roomName);
 }
 
 function updateWeightLocal(data) {
@@ -87,7 +89,7 @@ function sendMouseData() {
     }
     //console.log(coord);
     // send the coords to other users
-    socket.emit('line', coord);
+    socket.emit('line',roomName, coord);
 }
 
 function mousePressed() {
@@ -143,7 +145,7 @@ function keyPressed() {
     // remove all elements from the canvas
     if (key === 'e') {
         clearCanvas();
-        socket.emit('clear', 'clear');
+        socket.emit('clear',roomName, 'clear');
     }
     if(key === 'c') {
         for (let x = 0; x < lineArray.length; x++) {
@@ -164,42 +166,42 @@ function keyPressed() {
 document.getElementById("red").addEventListener("click", function(){
     console.log("red");
     currentColour = 'red';
-    socket.emit('colour', currentColour);
+    socket.emit('colour',roomName, currentColour);
 });
 
 //change to yellow
 document.getElementById("yellow").addEventListener("click", function(){
     currentColour = 'yellow';
-    socket.emit('colour', currentColour);
+    socket.emit('colour',roomName, currentColour);
 });
 
 //change to yellow
 document.getElementById("black").addEventListener("click", function(){
     currentColour = 'black';
-    socket.emit('colour', currentColour);
+    socket.emit('colour',roomName, currentColour);
 });
 
 //change to eraser
 document.getElementById("eraser").addEventListener("click", function(){
     currentColour = 'white';
 
-    socket.emit('colour', currentColour);
+    socket.emit('colour',roomName, currentColour);
 });
 
 // change stroke weight
 document.getElementById("small").addEventListener("click", function(){
     currentWeight = 3;
-    socket.emit('weight', currentWeight);
+    socket.emit('weight',roomName, currentWeight);
 });
 
 document.getElementById("regular").addEventListener("click", function(){
     currentWeight = 5;
-    socket.emit('weight', currentWeight);
+    socket.emit('weight',roomName, currentWeight);
 });
 
 document.getElementById("large").addEventListener("click", function(){
     currentWeight = 7;
-    socket.emit('weight', currentWeight);
+    socket.emit('weight',roomName, currentWeight);
 });
 
 function updateImg(data) {

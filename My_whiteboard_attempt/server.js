@@ -3,23 +3,60 @@ let express = require('express');
 // make the function
 let app = express();
 // listen on port 3000
-let http = require("http").Server(app).listen(3000);
+const server = require("http").Server(app);
 let upload = require('express-fileupload');
-// app should host in the directory 'public'
-app.use(express.static('public'));
+const io = require('socket.io')(server);
 app.use(upload());
 console.log("server is running");
-let socket = require('socket.io');
-// io will store messages from/to server.js
-let io = socket(http);
 
-io.sockets.on('connection', newConnection);
+// io will store messages from/to server.js
+app.set('views', './viewss');
+app.set('view engine','ejs');
+// app should host in the directory 'public'
+app.use(express.static('public'));
+app.use(express.urlencoded({extended:true}));
+// io.sockets.on('connection', newConnection);
+
+// list of rooms
+const rooms = {name: {}};
+
+// when the page first renders
+app.get('/', (req,res) => {
+    console.log(rooms);
+    res.render('index', {rooms: rooms});
+});
+
+app.post('/room', (req, res) => {
+    console.log("added room");
+    // if room exists return to room list
+    if (rooms[req.body.room] != null) {
+        return res.redirect('/');
+    }
+
+    rooms[req.body.room] = { users: {}};
+    res.redirect(req.body.room);
+    console.log("redirected");
+    // send message that new room was made
+    io.emit('room-created', req.body.room);
+});
+
+app.get('/:room', (req, res) => {
+    // if rooms doesn't exist return to room list
+    if (rooms[req.params.room] == null) {
+         return res.redirect('/');
+    }
+    console.log(req.params.room);
+    res.render('room', {roomName : req.params.room})
+});
+
+server.listen(3000);
 
 app.post("/", function (req, res) {
     if(req.files){
         let file = req.files.filename;
         let filename = file.name;
         console.log(file);
+        // put file in this location
         file.mv("./public/images/" + filename, function (err) {
             if (err) {
                 console.log(err);
@@ -34,7 +71,7 @@ app.post("/", function (req, res) {
     res.status(204).send();
 });
 
-function newConnection(socket) {
+io.on('connection', socket => {
     console.log('new connection: ' + socket.id);
 
     socket.on('mouse', mouseMsg);
@@ -46,45 +83,49 @@ function newConnection(socket) {
     socket.on('delete', tester);
     socket.on('weight', updateWeight);
 
-    function tester(){
-        socket.broadcast.emit('delete');
+    socket.on('new-user', room => {
+        socket.join(room);
+    })
+
+    function tester(room, data){
+        socket.to(room).broadcast.emit('delete', data);
     }
 
-    function updateLinesLength(data) {
+    function updateLinesLength(room,data) {
         // send data back out to others
-        socket.broadcast.emit('lineLengths', data);
+        socket.to(room).broadcast.emit('lineLengths',  data);
     }
 
-    function updateLineArray(data) {
+    function updateLineArray(room,data) {
         // send data back out to others
-        socket.broadcast.emit('lineArray', data);
+        socket.to(room).broadcast.emit('lineArray',  data);
     }
 
-    function mouseMsg(data) {
+    function mouseMsg(room,data) {
         // send data back out to others
-        socket.broadcast.emit('mouse',data);
+        socket.to(room).broadcast.emit('mouse', data);
         console.log(data);
     }
 
-    function lineMsg(data) {
+    function lineMsg(room,data) {
         // send data back out to others
-        socket.broadcast.emit('line',data);
+        socket.to(room).broadcast.emit('line', data);
     }
 
     function colourUpdate(data) {
         // send data back out to others
-        socket.broadcast.emit('colour', data);
+        socket.to(room).broadcast.emit('colour', data);
     }
 
     function clearCanvas(data) {
         // send data back out to others
-        socket.broadcast.emit('clear',data);
+        socket.to(room).broadcast.emit('clear', data);
     }
 
     function updateWeight(data) {
         // send data back out to others
-        socket.broadcast.emit('weight',data);
+        socket.to(room).broadcast.emit('weight', data);
     }
 
 
-}
+})

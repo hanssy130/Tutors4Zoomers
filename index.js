@@ -21,8 +21,8 @@ server.listen(port, "0.0.0.0", () => {
   console.log("Server has started ");
 });
 
-const socket = require("socket.io");
-const io = socket.listen(server);
+const socket = require("sockeconst io = socket.listen(server);t.io");
+
 io.sockets.on("connection", newConnection);
 
 // Initalize view engine and body parser
