@@ -3,7 +3,10 @@
 </head>
 
 <body>
-
+<!-- FB share -->
+  <div id="fb-root"></div>
+  <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_GB/sdk.js#xfbml=1&version=v7.0"></script>
+  
 <%- include("partials/navbar.ejs") -%>
 
 <div id="landingphoto">
@@ -129,7 +132,12 @@
 
 <footer>
   © Tutors4Zoomers 2020 by Hans Sy, George Yang, Justin Majam, and David
-  Wang.
+  Wang.<br>
+  Join the global discussion online!
+  <a href="https://twitter.com/intent/tweet?button_hashtag=Tutors4Zoomers&ref_src=twsrc%5Etfw" class="twitter-hashtag-button" data-show-count="false">Tweet #Tutors4Zoomers</a>
+  <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+  <br>
+  Share on Facebook! <div class="fb-share-button" data-href="http://tutors4zoomers.herokuapp.com" data-layout="button" data-size="small"><a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2Ftutors4zoomers.herokuapp.com%2F&amp;src=sdkpreparse" class="fb-xfbml-parse-ignore">Share</a></div>
 </footer>
 
   <%- include("partials/footer") -%>
