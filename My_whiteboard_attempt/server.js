@@ -32,7 +32,7 @@ app.post('/room', (req, res) => {
     if (rooms[req.body.room] != null) {
         return res.redirect('/');
     }
-
+    // add new room
     rooms[req.body.room] = { users: {}};
     res.redirect(req.body.room);
     console.log("redirected");
@@ -84,46 +84,55 @@ io.on('connection', socket => {
     socket.on('weight', updateWeight);
 
     socket.on('new-user', room => {
+        // joins the user to the room
         socket.join(room);
     })
 
     function tester(room, data){
+        // send to specific room
         socket.to(room).broadcast.emit('delete', data);
     }
 
     function updateLinesLength(room,data) {
         // send data back out to others
+        // send to specific room
         socket.to(room).broadcast.emit('lineLengths',  data);
     }
 
     function updateLineArray(room,data) {
         // send data back out to others
+        // send to specific room
         socket.to(room).broadcast.emit('lineArray',  data);
     }
 
     function mouseMsg(room,data) {
         // send data back out to others
+        // send to specific room
         socket.to(room).broadcast.emit('mouse', data);
         console.log(data);
     }
 
     function lineMsg(room,data) {
         // send data back out to others
+        // send to specific room
         socket.to(room).broadcast.emit('line', data);
     }
 
     function colourUpdate(data) {
         // send data back out to others
+        // send to specific room
         socket.to(room).broadcast.emit('colour', data);
     }
 
     function clearCanvas(data) {
         // send data back out to others
+        // send to specific room
         socket.to(room).broadcast.emit('clear', data);
     }
 
     function updateWeight(data) {
         // send data back out to others
+        // send to specific room
         socket.to(room).broadcast.emit('weight', data);
     }
 

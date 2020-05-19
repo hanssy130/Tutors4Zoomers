@@ -22,6 +22,7 @@ function setup() {
     socket.on('delete',  deleteNewest);
     socket.on('weight',  updateWeightLocal);
     socket.on('updateImg',  updateImgOnline);
+    // sends a new user message and the room name
     socket.emit('new-user', roomName);
 }
 
