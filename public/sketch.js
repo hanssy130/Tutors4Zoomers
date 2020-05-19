@@ -12,7 +12,11 @@ function setup() {
   // set background to white
   background(400);
   lineArray = [];
+
+  // CHOOSE ONE - connect locally vs Heroku
+  // socket = io.connect("http://localhost:3001/");
   socket = io.connect(window.location.hostname);
+
   socket.on("line", newLines);
   socket.on("colour", updateColour);
   socket.on("clear", clearCanvas);
@@ -20,6 +24,9 @@ function setup() {
   socket.on("lineArray", updateLineArray);
   socket.on("delete", deleteNewest);
   socket.on("weight", updateWeightLocal);
+  // sends a new user message and the room name
+  // For JUSTIN to review.
+  // socket.emit("new-user", roomName);
 }
 
 function updateWeightLocal(data) {
@@ -127,7 +134,7 @@ function keyPressed() {
   // remove all elements from the canvas
   if (key === "e") {
     clearCanvas();
-    socket.emit("clear", "clear");
+    socket.emit("clear", roomName, "clear");
   }
   if (key === "c") {
     for (let x = 0; x < lineArray.length; x++) {
@@ -148,39 +155,40 @@ function keyPressed() {
 document.getElementById("red").addEventListener("click", function () {
   console.log("red");
   currentColour = "red";
-  socket.emit("colour", currentColour);
+  socket.emit("colour", roomName, currentColour);
 });
 
 //change to yellow
 document.getElementById("yellow").addEventListener("click", function () {
   currentColour = "yellow";
-  socket.emit("colour", currentColour);
+  socket.emit("colour", roomName, currentColour);
 });
 
 //change to yellow
 document.getElementById("black").addEventListener("click", function () {
   currentColour = "black";
-  socket.emit("colour", currentColour);
+  socket.emit("colour", roomName, currentColour);
 });
 
 //change to eraser
 document.getElementById("eraser").addEventListener("click", function () {
-  currentColour = 51;
-  socket.emit("colour", currentColour);
+  currentColour = "white";
+
+  socket.emit("colour", roomName, currentColour);
 });
 
 // change stroke weight
 document.getElementById("small").addEventListener("click", function () {
   currentWeight = 3;
-  socket.emit("weight", currentWeight);
+  socket.emit("weight", roomName, currentWeight);
 });
 
 document.getElementById("regular").addEventListener("click", function () {
   currentWeight = 5;
-  socket.emit("weight", currentWeight);
+  socket.emit("weight", roomName, currentWeight);
 });
 
 document.getElementById("large").addEventListener("click", function () {
   currentWeight = 7;
-  socket.emit("weight", currentWeight);
+  socket.emit("weight", roomName, currentWeight);
 });
