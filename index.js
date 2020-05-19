@@ -205,6 +205,7 @@ function checkAuthenticated(req, res, next) {
 
 // Socket
 // ==========================================
+let user = [];
 function newConnection(socket) {
   console.log("New connection: " + socket.id);
   socket.on("mouse", mouseMsg);
@@ -215,6 +216,28 @@ function newConnection(socket) {
   socket.on("lineArray", updateLineArray);
   socket.on("delete", tester);
   socket.on("weight", updateWeight);
+
+  //Chatroom
+  socket.on("addUser", (username) => {
+    console.log(username);
+    socket.username = username;
+    user.push(username);
+    io.emit("updateChat", socket.username, " has joined")
+    io.emit("updateStatus", user)
+    io.emit("updateVideo", user);
+    io.emit("connectVideo", user)
+    // console.log(user);
+  })
+  socket.on("sendChat", (msg) => {
+    console.log(msg)
+    io.emit("updateChat", socket.username, ": " + msg)
+  })
+  socket.on("disconnect", ()=> {
+    let index = user.indexOf(socket.username)
+    user.splice(index, 1);
+    io.emit("updateStatus", user)
+  })
+
   function tester() {
     socket.broadcast.emit("delete");
   }
