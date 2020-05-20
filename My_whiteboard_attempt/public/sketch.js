@@ -21,7 +21,7 @@ function setup() {
     socket.on('lineArray',  updateLineArray);
     socket.on('delete',  deleteNewest);
     socket.on('weight',  updateWeightLocal);
-    socket.on('updateImg',  updateImgOnline);
+    socket.on('updateImg',  updateImg);
     // sends a new user message and the room name
     socket.emit('new-user', roomName);
 }
@@ -155,9 +155,9 @@ function keyPressed() {
     }
 
     if (key === 'z') {
-        socket.emit('lineLengths', linesLength);
-        socket.emit('lineArray', lineArray);
-        socket.emit('delete');
+        socket.emit('lineLengths',roomName, linesLength);
+        socket.emit('lineArray',roomName, lineArray);
+        socket.emit('delete', roomName, 'delete');
         console.log("SENT DELETE");
         deleteNewest()
     }
@@ -205,29 +205,26 @@ document.getElementById("large").addEventListener("click", function(){
     socket.emit('weight',roomName, currentWeight);
 });
 
+let names = document.getElementById('submit');
+let filename;
+names.addEventListener("click", function () {
+    let file;
+    file = document.getElementById('fileUp');
+    console.log(file.files.item(0).name);
+    filename = file.files.item(0).name;
+});
+
 function updateImg(data) {
-        let names = document.getElementById('fileUp');
-        console.log(names.files.item(0).name);
-        let url = names.files.item(0).name;
-        let img = "http://localhost:3000/images/" + url;
-        console.log(img);
-        let myCanvas = document.getElementById("wb");
-        imgURl = 'https://www.enchantedlearning.com/generate/thumbnails/multiply-1-1-6.gif';
-        myCanvas.style.background = "url('https://www.enchantedlearning.com/generate/thumbnails/multiply-1-1-6.gif')";
-        myCanvas.style.backgroundSize = "100% 100%";
-        // let image = loadImage('https://d1i4t8bqe7zgj6.cloudfront.net/09-28-2016/t_1475094050758_name_pepe.jpg');
-        // //canvas.drawingContext.globalCompositeOperation = 'destination-over';
-        // background(image);
-        console.log("bruh it worked?!");
+    if(data === filename){
+        console.log("match!");
+    } else if (filename !== null){
+        filename = data;
+    }
+    let url = "/images/" + filename;
+    let myCanvas = document.getElementById("wb");
+    myCanvas.style.background = "url('" + url + "')";
+    myCanvas.style.backgroundSize = "100% 100%";
+    console.log("bruh it worked?!");
 }
 
-function updateImgOnline(){
-    let myCanvas = document.getElementById("wb");
-    imgURl = 'https://www.enchantedlearning.com/generate/thumbnails/multiply-1-1-6.gif';
-    myCanvas.style.background = "url('https://www.enchantedlearning.com/generate/thumbnails/multiply-1-1-6.gif')";
-    myCanvas.style.backgroundSize = "100% 100%";
-    // let image = loadImage('https://d1i4t8bqe7zgj6.cloudfront.net/09-28-2016/t_1475094050758_name_pepe.jpg');
-    // //canvas.drawingContext.globalCompositeOperation = 'destination-over';
-    // background(image);
-    console.log("bruh it worked?! ONLINE");
-}
+

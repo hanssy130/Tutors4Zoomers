@@ -51,7 +51,9 @@ app.get('/:room', (req, res) => {
 
 server.listen(3000);
 
-app.post("/", function (req, res) {
+app.post("/images", function (req, res) {
+    console.log(req.body.socketName);
+    let currentSocket = req.body.socketName;
     if(req.files){
         let file = req.files.filename;
         let filename = file.name;
@@ -63,13 +65,17 @@ app.post("/", function (req, res) {
                 res.send("error fam");
             } else {
                 console.log("image uploaded");
-                io.sockets.emit('updateImg', filename);
+                console.log(filename);
+                // to certain socket
+                io.sockets.to(currentSocket).emit('updateImg', filename);
+                console.log("update sent");
             }
         })
     }
     //res.end();
     res.status(204).send();
 });
+
 
 io.on('connection', socket => {
     console.log('new connection: ' + socket.id);
@@ -82,6 +88,7 @@ io.on('connection', socket => {
     socket.on('lineArray', updateLineArray);
     socket.on('delete', tester);
     socket.on('weight', updateWeight);
+
 
     socket.on('new-user', room => {
         // joins the user to the room

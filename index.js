@@ -7,11 +7,14 @@ const passport = require("passport");
 const methodOverride = require("method-override");
 const LocalStrategy = require("passport-local");
 const passportLocalMongoose = require("passport-local-mongoose");
+const upload = require('express-fileupload');
+
 
 // Initialize Express
 // =========================================
 const app = express();
 const server = require("http").Server(app);
+app.use(upload());
 
 // Initialize port
 // ==========================================
@@ -21,9 +24,8 @@ server.listen(port, "0.0.0.0", () => {
   console.log("Server has started ");
 });
 
-const socket = require("sockeconst io = socket.listen(server);t.io");
-
-io.sockets.on("connection", newConnection);
+const socket = require("socket.io");
+const io = socket.listen(server);
 
 // Initalize view engine and body parser
 // =========================================
@@ -37,18 +39,18 @@ app.use(methodOverride("_method"));
 const dbUsername = "gyang";
 const dbPassword = "123123123";
 mongoose.connect(
-  `mongodb+srv://${dbUsername}:${dbPassword}@cluster0-p9khr.mongodb.net/T4Z`,
-  { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false }
+    `mongodb+srv://${dbUsername}:${dbPassword}@cluster0-p9khr.mongodb.net/T4Z`,
+    { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false }
 );
 
 // Initialize Passport
 // ==========================================
 app.use(
-  require("express-session")({
-    secret: "Sign Up test for",
-    resave: false,
-    saveUninitialized: false,
-  })
+    require("express-session")({
+      secret: "Sign Up test for",
+      resave: false,
+      saveUninitialized: false,
+    })
 );
 app.use(passport.initialize());
 app.use(passport.session());
@@ -95,12 +97,12 @@ app.get("/faillogin", (req, res) => {
   });
 });
 app.post(
-  "/login",
-  passport.authenticate("local", {
-    successRedirect: "/signin",
-    failureRedirect: "/faillogin",
-  }),
-  (req, res) => {}
+    "/login",
+    passport.authenticate("local", {
+      successRedirect: "/signin",
+      failureRedirect: "/faillogin",
+    }),
+    (req, res) => {}
 );
 
 // Sign Up
@@ -114,37 +116,30 @@ app.post("/signup", (req, res) => {
   req.body.username;
   req.body.password;
   User.register(
-    new User({
-      username: req.body.username,
-      status: req.body.type,
-      detail: {
-        firstName: req.body.firstName,
-        lastName: req.body.lastName,
-        age: req.body.age,
-        email: req.body.email,
-        education: req.body.education,
-        major: req.body.major,
-      },
-    }),
-    req.body.password,
-    (err, user) => {
-      if (err) {
-        return res.render("signup", {
-          errorMessage: "A user with the given username is already registered",
+      new User({
+        username: req.body.username,
+        status: req.body.type,
+        detail: {
+          firstName: req.body.firstName,
+          lastName: req.body.lastName,
+          age: req.body.age,
+          email: req.body.email,
+          education: req.body.education,
+          major: req.body.major,
+        },
+      }),
+      req.body.password,
+      (err, user) => {
+        if (err) {
+          return res.render("signup", {
+            errorMessage: "A user with the given username is already registered",
+          });
+        }
+        passport.authenticate("local")(req, res, () => {
+          res.redirect("/signin");
         });
       }
-      passport.authenticate("local")(req, res, () => {
-        res.redirect("/signin");
-      });
-    }
   );
-});
-
-// Tutoring Sessions
-// ========================================
-app.get("/session/:sessionID/", (req, res) => {
-  let sessionID = req.params.sessionID;
-  res.render("session");
 });
 
 // After user logged in
@@ -162,15 +157,15 @@ app.put("/userprofileUpdate", checkAuthenticated, (req, res) => {
   userID = req.user._id;
 
   User.findByIdAndUpdate(
-    userID,
-    { status: req.body.type, detail: req.body.detail },
-    (err, updatedUser) => {
-      if (err) {
-        res.send("failed");
-      } else {
-        res.redirect("/userprofile");
+      userID,
+      { status: req.body.type, detail: req.body.detail },
+      (err, updatedUser) => {
+        if (err) {
+          res.send("failed");
+        } else {
+          res.redirect("/userprofile");
+        }
       }
-    }
   );
 });
 
@@ -202,11 +197,71 @@ function checkAuthenticated(req, res, next) {
     });
   }
 }
+// Upload Images
+//=========================================
+app.post("/images", function (req, res) {
+  console.log(req.body.socketName);
+  let currentSocket = req.body.socketName;
+  if(req.files){
+    let file = req.files.filename;
+    let filename = file.name;
+    console.log(file);
+    // put file in this location
+    file.mv("./public/images/" + filename, function (err) {
+      if (err) {
+        console.log(err);
+        res.send("error fam");
+      } else {
+        console.log("image uploaded");
+        console.log(filename);
+        // to certain socket
+        io.sockets.to(currentSocket).emit('updateImg', filename);
+        console.log("update sent");
+      }
+    })
+  }
+  //res.end();
+  res.status(204).send();
+});
+
+// Rooms
+// =============================================
+// list of rooms
+const rooms = {};
+
+app.get("/session", (req, res) => {
+  console.log(rooms);
+  res.render("sessionlist", { rooms: rooms });
+});
+
+app.post("/session/room", (req, res) => {
+  console.log("added room");
+  // if room exists return to room list
+  if (rooms[req.body.room] != null) {
+    return res.redirect("/");
+  }
+  // add new room
+  rooms[req.body.room] = { users: {} };
+  res.redirect(req.body.room);
+  console.log("redirected");
+  // send message that new room was made
+  io.emit("room-created", req.body.room);
+});
+
+app.get("/session/:room", (req, res) => {
+  // if rooms doesn't exist return to room list
+  if (rooms[req.params.room] == null) {
+    return res.redirect("/session");
+  }
+  console.log(req.params.room);
+  res.render("session", { roomName: req.params.room });
+});
 
 // Socket
 // ==========================================
-function newConnection(socket) {
-  console.log("New connection: " + socket.id);
+io.on("connection", (socket) => {
+  console.log("new connection: " + socket.id);
+
   socket.on("mouse", mouseMsg);
   socket.on("line", lineMsg);
   socket.on("colour", colourUpdate);
@@ -215,36 +270,57 @@ function newConnection(socket) {
   socket.on("lineArray", updateLineArray);
   socket.on("delete", tester);
   socket.on("weight", updateWeight);
-  function tester() {
-    socket.broadcast.emit("delete");
+
+  socket.on("new-user", (room) => {
+    // joins the user to the room
+    socket.join(room);
+  });
+
+  function tester(room, data) {
+    // send to specific room
+    socket.to(room).broadcast.emit("delete", data);
   }
-  function updateLinesLength(data) {
+
+  function updateLinesLength(room, data) {
     // send data back out to others
-    socket.broadcast.emit("lineLengths", data);
+    // send to specific room
+    socket.to(room).broadcast.emit("lineLengths", data);
   }
-  function updateLineArray(data) {
+
+  function updateLineArray(room, data) {
     // send data back out to others
-    socket.broadcast.emit("lineArray", data);
+    // send to specific room
+    socket.to(room).broadcast.emit("lineArray", data);
   }
-  function mouseMsg(data) {
+
+  function mouseMsg(room, data) {
     // send data back out to others
-    socket.broadcast.emit("mouse", data);
+    // send to specific room
+    socket.to(room).broadcast.emit("mouse", data);
     console.log(data);
   }
-  function lineMsg(data) {
+
+  function lineMsg(room, data) {
     // send data back out to others
-    socket.broadcast.emit("line", data);
+    // send to specific room
+    socket.to(room).broadcast.emit("line", data);
   }
-  function colourUpdate(data) {
+
+  function colourUpdate(room, data) {
     // send data back out to others
-    socket.broadcast.emit("colour", data);
+    // send to specific room
+    socket.to(room).broadcast.emit("colour", data);
   }
-  function clearCanvas(data) {
+
+  function clearCanvas(room, data) {
     // send data back out to others
-    socket.broadcast.emit("clear", data);
+    // send to specific room
+    socket.to(room).broadcast.emit("clear", data);
   }
-  function updateWeight(data) {
+
+  function updateWeight(room, data) {
     // send data back out to others
-    socket.broadcast.emit("weight", data);
+    // send to specific room
+    socket.to(room).broadcast.emit("weight", data);
   }
-}
+});
