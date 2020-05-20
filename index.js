@@ -176,6 +176,20 @@ app.delete("/destoryprofile", checkAuthenticated, (req, res) => {
   });
 });
 
+// booking
+// =========================================
+
+app.get("/booking", (req, res) => {
+  User.find({}, (err, allData) => {
+    if (err) {
+      console.log(err)
+    } else {
+      res.render("booking", {allData : allData})
+    }
+  })
+  
+})
+
 // Logout
 // =========================================
 app.get("/logout", (req, res) => {

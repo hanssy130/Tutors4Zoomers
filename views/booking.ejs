@@ -1,0 +1,24 @@
+<%- include("partials/header") -%>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+<title>Signed In | Tutors4Zoomers</title>
+</head>
+
+<body>
+
+<%- include("partials/loginNav.ejs") -%>
+
+<% allData.forEach(data => { %>
+    <div class="card" style="width: 18rem;">
+        <div class="card-body">
+            <p>Name: <%= data.detail.firstName %> <%= data.detail.lastName %></p>
+            <p>Email: <%= data.detail.email %></p>
+            <p>Education: <%= data.detail.education %></p>
+            <p>Major: <%= data.detail.major %></p>
+            <button><a href="mailto: <%=data.detail.email%>">Contact</a></button>
+        </div>
+    </div>
+<% }) %>
+
+
+
+<%- include("partials/footer") -%>
