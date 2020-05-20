@@ -4,6 +4,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const passport = require("passport");
+const nodemailer = require("nodemailer");
 const methodOverride = require("method-override");
 const LocalStrategy = require("passport-local");
 const passportLocalMongoose = require("passport-local-mongoose");
@@ -73,6 +74,17 @@ const User = mongoose.model("User", userSchema);
 passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
+
+// nodemailer Initialize
+// ================================================
+
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: 'tutor4zoomer@gmail.com',
+    pass: "yrN5aPpE"
+  }
+});
 
 // Landing Page
 // ======================================
@@ -175,6 +187,43 @@ app.delete("/destoryprofile", checkAuthenticated, (req, res) => {
     }
   });
 });
+
+
+// booking
+// =========================================
+
+app.get("/booking", checkAuthenticated, (req, res) => {
+  User.find({}, (err, allData) => {
+    if (err) {
+      console.log(err)
+    } else {
+      res.render("booking", {allData : allData})
+    }
+  })
+});
+
+app.post("/sendemail", checkAuthenticated, (req, res) => {
+  sender = req.user.detail.email
+  receiver = req.body.email
+  mailOption = {
+    from: "tutor4zoomer@gmail.com", 
+    to: receiver, 
+    subject: "Booking appointment", 
+    text: `
+    Dear Tutor,
+
+    A student would like to schedule a tutoring session with you.
+    Please e-mail the student back at ${sender} to schedule an appointment.
+    `, 
+  }
+  transporter.sendMail(mailOption, (err, info) => {
+    if (err) {
+      console.log(err)
+    } else {
+      res.redirect("/booking")
+    }
+  });
+})
 
 // Logout
 // =========================================
