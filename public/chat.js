@@ -161,11 +161,13 @@ socket.on("connectVideo", (userList) => {
 
     function createPeerConnection() {
         try {
-            pc = new RTCPeerConnection(null);
+            let restartConfig = { iceServers: [{"url":"stun:global.stun.twilio.com:3478?transport=udp","urls":"stun:global.stun.twilio.com:3478?transport=udp"},{"url":"turn:global.turn.twilio.com:3478?transport=udp","username":"abf02c35e539434012b71e2ace210512ae18c614876359567bcde0ef43faf8d5","urls":"turn:global.turn.twilio.com:3478?transport=udp","credential":"2uAYY3xLH0Uj+CNn2580pVDfNZQssSUwKHwh0QPaKaM="},{"url":"turn:global.turn.twilio.com:3478?transport=tcp","username":"abf02c35e539434012b71e2ace210512ae18c614876359567bcde0ef43faf8d5","urls":"turn:global.turn.twilio.com:3478?transport=tcp","credential":"2uAYY3xLH0Uj+CNn2580pVDfNZQssSUwKHwh0QPaKaM="},{"url":"turn:global.turn.twilio.com:443?transport=tcp","username":"abf02c35e539434012b71e2ace210512ae18c614876359567bcde0ef43faf8d5","urls":"turn:global.turn.twilio.com:443?transport=tcp","credential":"2uAYY3xLH0Uj+CNn2580pVDfNZQssSUwKHwh0QPaKaM="}]
+            };
+            pc = new RTCPeerConnection(restartConfig);
             pc.onicecandidate = handleIceCandidate;
             pc.onaddstream = handleRemoteStreamAdded;
             pc.onremovestream = handleRemoteStreamRemoved;
-            console.log('Created RTCPeerConnnection');
+            console.log('Created RTCPeerConnection');
         } catch (e) {
             console.log('Failed to create PeerConnection, exception: ' + e.message);
             alert('Cannot create RTCPeerConnection object.');
