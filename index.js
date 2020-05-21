@@ -8,11 +8,16 @@ const nodemailer = require("nodemailer");
 const methodOverride = require("method-override");
 const LocalStrategy = require("passport-local");
 const passportLocalMongoose = require("passport-local-mongoose");
+const upload = require('express-fileupload');
+const cloudinary = require('cloudinary').v2;
 
 // Initialize Express
 // =========================================
 const app = express();
 const server = require("http").Server(app);
+app.use(upload({
+  useTempFiles:  true
+}));
 
 // Initialize port
 // ==========================================
@@ -32,23 +37,31 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(__dirname + "/public"));
 app.use(methodOverride("_method"));
 
+// Cloudinary config
+//======================================
+cloudinary.config({
+  cloud_name: 'dprpcrp7n',
+  api_key: '376436784342749',
+  api_secret: '9eZqrbd0_77WGybe8zd88sh9LSg'
+});
+
 // Initialize Mongoose
 // =========================================
 const dbUsername = "gyang";
 const dbPassword = "123123123";
 mongoose.connect(
-  `mongodb+srv://${dbUsername}:${dbPassword}@cluster0-p9khr.mongodb.net/T4Z`,
-  { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false }
+    `mongodb+srv://${dbUsername}:${dbPassword}@cluster0-p9khr.mongodb.net/T4Z`,
+    { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false }
 );
 
 // Initialize Passport
 // ==========================================
 app.use(
-  require("express-session")({
-    secret: "Sign Up test for",
-    resave: false,
-    saveUninitialized: false,
-  })
+    require("express-session")({
+      secret: "Sign Up test for",
+      resave: false,
+      saveUninitialized: false,
+    })
 );
 app.use(passport.initialize());
 app.use(passport.session());
@@ -106,12 +119,12 @@ app.get("/faillogin", (req, res) => {
   });
 });
 app.post(
-  "/login",
-  passport.authenticate("local", {
-    successRedirect: "/signin",
-    failureRedirect: "/faillogin",
-  }),
-  (req, res) => {}
+    "/login",
+    passport.authenticate("local", {
+      successRedirect: "/signin",
+      failureRedirect: "/faillogin",
+    }),
+    (req, res) => {}
 );
 
 // Sign Up
@@ -125,29 +138,29 @@ app.post("/signup", (req, res) => {
   req.body.username;
   req.body.password;
   User.register(
-    new User({
-      username: req.body.username,
-      status: req.body.type,
-      detail: {
-        firstName: req.body.firstName,
-        lastName: req.body.lastName,
-        age: req.body.age,
-        email: req.body.email,
-        education: req.body.education,
-        major: req.body.major,
-      },
-    }),
-    req.body.password,
-    (err, user) => {
-      if (err) {
-        return res.render("signup", {
-          errorMessage: "A user with the given username is already registered",
+      new User({
+        username: req.body.username,
+        status: req.body.type,
+        detail: {
+          firstName: req.body.firstName,
+          lastName: req.body.lastName,
+          age: req.body.age,
+          email: req.body.email,
+          education: req.body.education,
+          major: req.body.major,
+        },
+      }),
+      req.body.password,
+      (err, user) => {
+        if (err) {
+          return res.render("signup", {
+            errorMessage: "A user with the given username is already registered",
+          });
+        }
+        passport.authenticate("local")(req, res, () => {
+          res.redirect("/signin");
         });
       }
-      passport.authenticate("local")(req, res, () => {
-        res.redirect("/signin");
-      });
-    }
   );
 });
 
@@ -166,15 +179,15 @@ app.put("/userprofileUpdate", checkAuthenticated, (req, res) => {
   userID = req.user._id;
 
   User.findByIdAndUpdate(
-    userID,
-    { status: req.body.type, detail: req.body.detail },
-    (err, updatedUser) => {
-      if (err) {
-        res.send("failed");
-      } else {
-        res.redirect("/userprofile");
+      userID,
+      { status: req.body.type, detail: req.body.detail },
+      (err, updatedUser) => {
+        if (err) {
+          res.send("failed");
+        } else {
+          res.redirect("/userprofile");
+        }
       }
-    }
   );
 });
 
@@ -243,6 +256,56 @@ function checkAuthenticated(req, res, next) {
     });
   }
 }
+// Upload Images
+//=========================================
+app.post("/images", function (req, res) {
+  let currentSocket = req.body.socketName;
+  console.log("SOCKET: " + currentSocket);
+  const file = req.files.filename;
+  console.log(file);
+  cloudinary.uploader.upload(file.tempFilePath).then(result=> {
+    console.log("NICE");
+    console.log(result.url);
+    io.sockets.to(currentSocket).emit('updateImg', result.url);
+  }).catch(err=>{
+    console.log("unfortunate");
+    console.log(err);
+  });
+  res.status(204).send();
+});
+
+// Rooms
+// =============================================
+// list of rooms
+const rooms = {};
+
+app.get("/session", (req, res) => {
+  console.log(rooms);
+  res.render("sessionlist", { rooms: rooms });
+});
+
+app.post("/session/room", (req, res) => {
+  console.log("added room");
+  // if room exists return to room list
+  if (rooms[req.body.room] != null) {
+    return res.redirect("/");
+  }
+  // add new room
+  rooms[req.body.room] = { users: {} };
+  res.redirect(req.body.room);
+  console.log("redirected");
+  // send message that new room was made
+  io.emit("room-created", req.body.room);
+});
+
+app.get("/session/:room", (req, res) => {
+  // if rooms doesn't exist return to room list
+  if (rooms[req.params.room] == null) {
+    return res.redirect("/session");
+  }
+  console.log(req.params.room);
+  res.render("session", { roomName: req.params.room });
+});
 
 // Rooms
 // =============================================

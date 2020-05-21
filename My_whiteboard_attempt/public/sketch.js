@@ -21,7 +21,7 @@ function setup() {
     socket.on('lineArray',  updateLineArray);
     socket.on('delete',  deleteNewest);
     socket.on('weight',  updateWeightLocal);
-    socket.on('updateImg',  updateImgOnline);
+    socket.on('updateImg',  updateImg);
     // sends a new user message and the room name
     socket.emit('new-user', roomName);
 }
@@ -155,9 +155,9 @@ function keyPressed() {
     }
 
     if (key === 'z') {
-        socket.emit('lineLengths', linesLength);
-        socket.emit('lineArray', lineArray);
-        socket.emit('delete');
+        socket.emit('lineLengths',roomName, linesLength);
+        socket.emit('lineArray',roomName, lineArray);
+        socket.emit('delete', roomName, 'delete');
         console.log("SENT DELETE");
         deleteNewest()
     }
@@ -205,29 +205,43 @@ document.getElementById("large").addEventListener("click", function(){
     socket.emit('weight',roomName, currentWeight);
 });
 
-function updateImg(data) {
-        let names = document.getElementById('fileUp');
-        console.log(names.files.item(0).name);
-        let url = names.files.item(0).name;
-        let img = "http://localhost:3000/images/" + url;
-        console.log(img);
-        let myCanvas = document.getElementById("wb");
-        imgURl = 'https://www.enchantedlearning.com/generate/thumbnails/multiply-1-1-6.gif';
-        myCanvas.style.background = "url('https://www.enchantedlearning.com/generate/thumbnails/multiply-1-1-6.gif')";
-        myCanvas.style.backgroundSize = "100% 100%";
-        // let image = loadImage('https://d1i4t8bqe7zgj6.cloudfront.net/09-28-2016/t_1475094050758_name_pepe.jpg');
-        // //canvas.drawingContext.globalCompositeOperation = 'destination-over';
-        // background(image);
-        console.log("bruh it worked?!");
-}
+let names = document.getElementById('submit');
+let filename;
+names.addEventListener("click", function () {
+    let file;
+    file = document.getElementById('fileUp');
+    console.log(file.files.item(0).name);
+    filename = file.files.item(0).name;
+});
 
-function updateImgOnline(){
+function updateImg(data) {
+    let url = data;
     let myCanvas = document.getElementById("wb");
-    imgURl = 'https://www.enchantedlearning.com/generate/thumbnails/multiply-1-1-6.gif';
-    myCanvas.style.background = "url('https://www.enchantedlearning.com/generate/thumbnails/multiply-1-1-6.gif')";
+    myCanvas.style.background = "url('" + url + "')";
     myCanvas.style.backgroundSize = "100% 100%";
-    // let image = loadImage('https://d1i4t8bqe7zgj6.cloudfront.net/09-28-2016/t_1475094050758_name_pepe.jpg');
-    // //canvas.drawingContext.globalCompositeOperation = 'destination-over';
-    // background(image);
-    console.log("bruh it worked?! ONLINE");
+    console.log("bruh it worked?!");
 }
+const CLOUDINARY_UPLOAD_PRESET = 'bnxpusjc';
+const CLOUDINARY_URL = 'https://api.cloudinary.com/v1_1/dprpcrp7n/upload';
+let file_upload = document.getElementById('fileUp');
+let submitButton = document.getElementById('submit');
+
+// submitButton.addEventListener('click', function() {
+//     let file = file_upload.files[0];
+//     console.log(file_upload);
+//     let form = new FormData();
+//     form.append('file', file);
+//     form.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+//     form.append('socket', roomName);
+//     axios({
+//         url: CLOUDINARY_URL,
+//         method: 'POST',
+//         data: form
+//     }).then(res => {
+//         console.log("YAY");
+//     }).catch(err=> {
+//         console.log(err);
+//     })
+// });
+
+

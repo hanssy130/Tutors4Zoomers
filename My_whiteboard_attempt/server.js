@@ -6,7 +6,10 @@ let app = express();
 const server = require("http").Server(app);
 let upload = require('express-fileupload');
 const io = require('socket.io')(server);
-app.use(upload());
+const cloudinary = require('cloudinary').v2;
+app.use(upload({
+    useTempFiles:  true
+}));
 console.log("server is running");
 
 // io will store messages from/to server.js
@@ -16,6 +19,9 @@ app.set('view engine','ejs');
 app.use(express.static('public'));
 app.use(express.urlencoded({extended:true}));
 // io.sockets.on('connection', newConnection);
+
+
+
 
 // list of rooms
 const rooms = {name: {}};
@@ -51,25 +57,29 @@ app.get('/:room', (req, res) => {
 
 server.listen(3000);
 
-app.post("/", function (req, res) {
-    if(req.files){
-        let file = req.files.filename;
-        let filename = file.name;
-        console.log(file);
-        // put file in this location
-        file.mv("./public/images/" + filename, function (err) {
-            if (err) {
-                console.log(err);
-                res.send("error fam");
-            } else {
-                console.log("image uploaded");
-                io.sockets.emit('updateImg', filename);
-            }
-        })
-    }
-    //res.end();
+
+cloudinary.config({
+    cloud_name: 'dprpcrp7n',
+    api_key: '376436784342749',
+    api_secret: '9eZqrbd0_77WGybe8zd88sh9LSg'
+});
+
+app.post("/images", function (req, res) {
+    let currentSocket = req.body.socketName;
+    console.log("SOCKET: " + currentSocket);
+    const file = req.files.filename;
+    console.log(file);
+    cloudinary.uploader.upload(file.tempFilePath).then(result=> {
+        console.log("NICE");
+        console.log(result.url);
+        io.sockets.to(currentSocket).emit('updateImg', result.url);
+    }).catch(err=>{
+        console.log("unfortunate");
+        console.log(err);
+    });
     res.status(204).send();
 });
+
 
 io.on('connection', socket => {
     console.log('new connection: ' + socket.id);
@@ -83,10 +93,11 @@ io.on('connection', socket => {
     socket.on('delete', tester);
     socket.on('weight', updateWeight);
 
+
     socket.on('new-user', room => {
         // joins the user to the room
         socket.join(room);
-    })
+    });
 
     function tester(room, data){
         // send to specific room
