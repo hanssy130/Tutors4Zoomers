@@ -253,8 +253,8 @@ function newConnection(socket) {
   socket.on('create or join', function(room) {
     log('Received request to create or join room ' + room);
 
-    var clientsInRoom = io.sockets.adapter.rooms[room];
-    var numClients = clientsInRoom ? Object.keys(clientsInRoom.sockets).length : 0;
+    let clientsInRoom = io.sockets.adapter.rooms[room];
+    let numClients = clientsInRoom ? Object.keys(clientsInRoom.sockets).length : 0;
     log('Room ' + room + ' now has ' + numClients + ' client(s)');
 
     if (numClients === 0) {
@@ -262,14 +262,21 @@ function newConnection(socket) {
       log('Client ID ' + socket.id + ' created room ' + room);
       socket.emit('created', room, socket.id);
 
-    } else if (numClients === 1) {
-      log('Client ID ' + socket.id + ' joined room ' + room);
-      io.sockets.in(room).emit('join', room);
-      socket.join(room);
-      socket.emit('joined', room, socket.id);
-      io.sockets.in(room).emit('ready');
-    } else { // max two clients
-      socket.emit('full', room);
+      // } else if (numClients === 1) {
+      //   log('Client ID ' + socket.id + ' joined room ' + room);
+      //   io.sockets.in(room).emit('join', room);
+      //   socket.join(room);
+      //   socket.emit('joined', room, socket.id);
+      //   io.sockets.in(room).emit('ready');
+      // } else { // max two clients
+      //   socket.emit('full', room);
+      // }
+    } else {
+        log('Client ID ' + socket.id + ' joined room ' + room);
+        io.sockets.in(room).emit('join', room);
+        socket.join(room);
+        socket.emit('joined', room, socket.id);
+        io.sockets.in(room).emit('ready');
     }
   });
 
