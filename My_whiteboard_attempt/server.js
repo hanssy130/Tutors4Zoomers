@@ -7,8 +7,6 @@ const server = require("http").Server(app);
 let upload = require('express-fileupload');
 const io = require('socket.io')(server);
 const cloudinary = require('cloudinary').v2;
-const axios = require('axios');
-const FormData = require('form-data');
 app.use(upload({
     useTempFiles:  true
 }));
@@ -67,7 +65,6 @@ cloudinary.config({
 });
 
 app.post("/images", function (req, res) {
-    let resultInfo;
     let currentSocket = req.body.socketName;
     console.log("SOCKET: " + currentSocket);
     const file = req.files.filename;

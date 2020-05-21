@@ -216,12 +216,7 @@ names.addEventListener("click", function () {
 });
 
 function updateImg(data) {
-  if(data === filename){
-    console.log("match!");
-  } else if (filename !== null){
-    filename = data;
-  }
-  let url = "/images/" + filename;
+  let url = data;
   let myCanvas = document.getElementById("wb");
   myCanvas.style.background = "url('" + url + "')";
   myCanvas.style.backgroundSize = "100% 100%";

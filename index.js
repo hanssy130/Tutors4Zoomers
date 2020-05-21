@@ -8,13 +8,15 @@ const methodOverride = require("method-override");
 const LocalStrategy = require("passport-local");
 const passportLocalMongoose = require("passport-local-mongoose");
 const upload = require('express-fileupload');
-
+const cloudinary = require('cloudinary').v2;
 
 // Initialize Express
 // =========================================
 const app = express();
 const server = require("http").Server(app);
-app.use(upload());
+app.use(upload({
+  useTempFiles:  true
+}));
 
 // Initialize port
 // ==========================================
@@ -200,27 +202,18 @@ function checkAuthenticated(req, res, next) {
 // Upload Images
 //=========================================
 app.post("/images", function (req, res) {
-  console.log(req.body.socketName);
   let currentSocket = req.body.socketName;
-  if(req.files){
-    let file = req.files.filename;
-    let filename = file.name;
-    console.log(file);
-    // put file in this location
-    file.mv("./public/images/" + filename, function (err) {
-      if (err) {
-        console.log(err);
-        res.send("error fam");
-      } else {
-        console.log("image uploaded");
-        console.log(filename);
-        // to certain socket
-        io.sockets.to(currentSocket).emit('updateImg', filename);
-        console.log("update sent");
-      }
-    })
-  }
-  //res.end();
+  console.log("SOCKET: " + currentSocket);
+  const file = req.files.filename;
+  console.log(file);
+  cloudinary.uploader.upload(file.tempFilePath).then(result=> {
+    console.log("NICE");
+    console.log(result.url);
+    io.sockets.to(currentSocket).emit('updateImg', result.url);
+  }).catch(err=>{
+    console.log("unfortunate");
+    console.log(err);
+  });
   res.status(204).send();
 });
 
