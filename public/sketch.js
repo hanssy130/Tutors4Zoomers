@@ -17,8 +17,8 @@ function setup() {
 
   socket = io();
 
-  socket = io.connect("http://localhost:3001/");
-  //socket = io.connect(window.location.hostname);
+  // socket = io.connect("http://localhost:3001/");
+  socket = io.connect(window.location.hostname);
 
   socket.on("line", newLines);
   socket.on("colour", updateColour);
