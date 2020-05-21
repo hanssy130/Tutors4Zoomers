@@ -259,7 +259,7 @@ function checkAuthenticated(req, res, next) {
 }
 // Upload Images
 //=========================================
-app.post("/images", function (req, res) {
+app.post("/images", checkAuthenticated, function (req, res) {
   let currentSocket = req.body.socketName;
   const file = req.files.filename;
   cloudinary.uploader
@@ -279,11 +279,11 @@ app.post("/images", function (req, res) {
 // list of rooms
 const rooms = {};
 
-app.get("/session", (req, res) => {
+app.get("/session", checkAuthenticated, (req, res) => {
   res.render("sessionlist", { rooms: rooms });
 });
 
-app.post("/session/room", (req, res) => {
+app.post("/session/room", checkAuthenticated, (req, res) => {
   // if room exists return to room list
   if (rooms[req.body.room] != null) {
     return res.redirect("/");
@@ -296,7 +296,7 @@ app.post("/session/room", (req, res) => {
   io.emit("room-created", req.body.room);
 });
 
-app.get("/session/:room", (req, res) => {
+app.get("/session/:room", checkAuthenticated, (req, res) => {
   // if rooms doesn't exist return to room list
   if (rooms[req.params.room] == null) {
     return res.redirect("/session");
