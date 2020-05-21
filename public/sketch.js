@@ -1,4 +1,4 @@
-let socket;
+let socket = io();
 let lineArray;
 let canvas;
 let currentColour = "black";
@@ -12,8 +12,14 @@ function setup() {
   canvas = createCanvas(400, 400);
   canvas.id("wb");
   lineArray = [];
+
+  // socket = io.connect(window.location.hostname);
+  //David: somehow only this works for me   
+  socket = io();
+
   //socket = io.connect('http://localhost:3001/');
-  socket = io.connect(window.location.hostname);
+  //socket = io.connect(window.location.hostname);
+
   socket.on("line", newLines);
   socket.on("colour", updateColour);
   socket.on("clear", clearCanvas);
