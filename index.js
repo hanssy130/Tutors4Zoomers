@@ -295,3 +295,11 @@ io.on("connection", (socket) => {
     socket.to(room).broadcast.emit("weight", data);
   }
 });
+
+// Testing Bulma
+// ==================================================
+// Landing Page
+// ======================================
+app.get("/bulma", (req, res) => {
+  res.render("bulma");
+});

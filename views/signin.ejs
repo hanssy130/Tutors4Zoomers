@@ -1,25 +1,43 @@
 <%- include("partials/header") -%>
-<title>Signed In | Tutors4Zoomers</title>
+  <title>Home | Tutors4Zoomers</title>
 </head>
 
 <body>
 
 <%- include("partials/loginNav.ejs") -%>
 
-<div id="landingphoto">
-    <img src="./resources/landingphotoedited.png" width="1000px" />
-  </div>
-  <center>
-    <h1>You are now logged in</h1>
-    <br />
-      <button class="portalbutton">Book a tutor</button>
-    <br /><br />
-    <form action="/session">
-    <button class="portalbutton">Open a tutoring session</button>
-  </form>
+<div class="container">
+
+  <section class="hero is-primary">
+      <div class="hero-body">
+          <h1 class="title">Home</h1>
+          <h2 class="subtitle">You are now logged in.</h2>
+      </div>
+  </section>
   <br /><br />
-    <button><a href="/logout">Logout</a></button>  
-</center>
 
+  <div class="block">
+    <div class="columns" style="text-align: center;">
+      <div class="column">
+          <form>
+          <img src="./resources/bookatutor.png" width="160px" /><br><br>
+          <button class="button is-primary is-large">Book a tutor</button>
+          </form>
+      </div>
+      <div class="column">
+          <form action="/session">
+            <img src="./resources/tutoringsession.png" width="160px" /><br><br>
+            <button class="button is-primary is-large">Open a tutoring session</button>
+          </form>  
+      </div>
+    </div>
+  </div>
+  <br><br>
+  
+  <div class="block" style="text-align: center;">
+    <button class="button is-danger is-medium"><a href="/logout">Sign Out</a></button>
+  </div>
+  <br>
 
+</div>
 <%- include("partials/footer") -%>

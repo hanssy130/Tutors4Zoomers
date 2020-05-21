@@ -1,37 +1,40 @@
-<!DOCTYPE html>
-<html>
+<%- include("partials/header") -%>
 
-<head>
-  <meta charset="UTF-8" name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Login | Tutors4Zoomers</title>
-  <link rel="icon" href="./resources/favicon.png" />
-  <link rel="stylesheet" type="text/css" href="login.css" />
+  <title>Login | T4Z</title>
 </head>
 
 <body>
+  
+  <%- include("partials/navbar.ejs") -%>
 
-  <p><%= errorMessage %></p>
+  <div class="container">
 
-  <div class="d-flex justify-content-center align-items-center login-container">
-    <form class="login-form text-center" action="/login" method="POST">
-      <div class="form-group mt-3">
-        <input type="text" name="username" class="form-control rounded-pill form-control-lg" placeholder="username"
-          required />
+    <section class="hero is-success">
+      <div class="hero-body">
+          <h1 class="title">Login</h1>
+          <h2 class="subtitle">Enter your username and password.</h2>
       </div>
-      <div class="form-group">
-        <input type="password" name="password" class="form-control rounded-pill form-control-lg" placeholder="password"
-          required />
-      </div>
-      <button type="submit" class="btn mt-4 rounded-pill btn-lg btn-custom btn-block text-uppercase">
-        Login
-      </button>
-    </form>
-    <button>
-      <a href="/signup">Sign Up</a>
-    </button>
+    </section>
+    <br />
+
+    <p><%= errorMessage %></p>
+
+    <div class="block">
+      <form action="/login" method="POST" class="box">
+        <div class="field">
+          <label class="label">Username</label>
+          <input type="text" name="username" class="input" placeholder="Enter Username" required>
+        </div>
+        <div class="field">
+          <label class="label">Password</label>
+          <input type="password" name="password" class="input" placeholder="Enter Password" required>
+        </div>
+
+        <button type="submit" class="button is-success">
+          Login
+        </button>
+      </form>
+    </div>
   </div>
-</body>
-
-
-
-</html>
+  
+  <%- include("partials/footer") -%>
