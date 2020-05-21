@@ -218,15 +218,17 @@ function newConnection(socket) {
   socket.on("weight", updateWeight);
 
   //Chatroom
+  // ==========================================
   socket.on("addUser", (username) => {
     console.log(username);
     socket.username = username;
     user.push(username);
+    //Announce user has joined in
     io.emit("updateChat", socket.username, " has joined")
+    //Update user online status
     io.emit("updateStatus", user)
     io.emit("updateVideo", user);
     io.emit("connectVideo", user)
-    // console.log(user);
   })
   socket.on("sendChat", (msg) => {
     console.log(msg)
@@ -257,6 +259,7 @@ function newConnection(socket) {
     let numClients = clientsInRoom ? Object.keys(clientsInRoom.sockets).length : 0;
     log('Room ' + room + ' now has ' + numClients + ' client(s)');
 
+    //NOTE: need fixing to allow multiple users to join in
     if (numClients === 0) {
       socket.join(room);
       log('Client ID ' + socket.id + ' created room ' + room);

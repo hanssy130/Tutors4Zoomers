@@ -1,8 +1,10 @@
 socket.on("connect", () => {
+    //Get username
     socket.emit("addUser", prompt("Hello! What is your name?"));
 });
 
 socket.on("updateChat", (username, data) => {
+    //Add message to chat
     $("#conversation").append("<b>" + username + "</b>" + data + "</br>");
 })
 
@@ -10,13 +12,12 @@ socket.on("updateStatus", (userList) => {
     let onlineStatus = $("#onlineUser");
     document.getElementById("onlineUser").innerHTML = "";
     for(let i = 0; i < userList.length; i++) {
+        //Add user to online section
         onlineStatus.append("<b>" + userList[i] + "</b></br>");
     }
 })
 
 socket.on("connectVideo", (userList) => {
-    'use strict';
-
     let isChannelReady = false;
     let isInitiator = false;
     let isStarted = false;
@@ -40,8 +41,8 @@ socket.on("connectVideo", (userList) => {
 /////////////////////////////////////////////
 
     let room = 'foo';
-// Could prompt for room name:
-// room = prompt('Enter room name:');
+    // Could prompt for room name:
+    // room = prompt('Enter room name:');
 
     if (room !== '') {
         socket.emit('create or join', room);
@@ -79,7 +80,7 @@ socket.on("connectVideo", (userList) => {
         socket.emit('message', message);
     }
 
-// This client receives a message
+    // This client receives a message
     socket.on('message', function(message) {
         console.log('Client received message:', message);
         if (message === 'got user media') {
@@ -108,6 +109,7 @@ socket.on("connectVideo", (userList) => {
     let localVideo = document.getElementById("localVideo");
     let remoteVideo = document.getElementById("remoteVideo");
 
+    //Option to get video/audio
     navigator.mediaDevices.getUserMedia({
         audio: false,
         video: true
@@ -133,6 +135,7 @@ socket.on("connectVideo", (userList) => {
 
     console.log('Getting user media with constraints', constraints);
 
+    //Following should be removed, leave it for now
     // if (location.hostname !== 'localhost') {
     //     requestTurn(
     //         'https://computeengineondemand.appspot.com/turn?username=41784574&key=4080218913'
@@ -161,7 +164,10 @@ socket.on("connectVideo", (userList) => {
 
     function createPeerConnection() {
         try {
-            let restartConfig = { iceServers: [{"url":"stun:global.stun.twilio.com:3478?transport=udp","urls":"stun:global.stun.twilio.com:3478?transport=udp"},{"url":"turn:global.turn.twilio.com:3478?transport=udp","username":"abf02c35e539434012b71e2ace210512ae18c614876359567bcde0ef43faf8d5","urls":"turn:global.turn.twilio.com:3478?transport=udp","credential":"2uAYY3xLH0Uj+CNn2580pVDfNZQssSUwKHwh0QPaKaM="},{"url":"turn:global.turn.twilio.com:3478?transport=tcp","username":"abf02c35e539434012b71e2ace210512ae18c614876359567bcde0ef43faf8d5","urls":"turn:global.turn.twilio.com:3478?transport=tcp","credential":"2uAYY3xLH0Uj+CNn2580pVDfNZQssSUwKHwh0QPaKaM="},{"url":"turn:global.turn.twilio.com:443?transport=tcp","username":"abf02c35e539434012b71e2ace210512ae18c614876359567bcde0ef43faf8d5","urls":"turn:global.turn.twilio.com:443?transport=tcp","credential":"2uAYY3xLH0Uj+CNn2580pVDfNZQssSUwKHwh0QPaKaM="}]
+            let restartConfig = { iceServers: [{"url":"stun:global.stun.twilio.com:3478?transport=udp","urls":"stun:global.stun.twilio.com:3478?transport=udp"},
+                    {"url":"turn:global.turn.twilio.com:3478?transport=udp","username":"abf02c35e539434012b71e2ace210512ae18c614876359567bcde0ef43faf8d5","urls":"turn:global.turn.twilio.com:3478?transport=udp","credential":"2uAYY3xLH0Uj+CNn2580pVDfNZQssSUwKHwh0QPaKaM="},
+                    {"url":"turn:global.turn.twilio.com:3478?transport=tcp","username":"abf02c35e539434012b71e2ace210512ae18c614876359567bcde0ef43faf8d5","urls":"turn:global.turn.twilio.com:3478?transport=tcp","credential":"2uAYY3xLH0Uj+CNn2580pVDfNZQssSUwKHwh0QPaKaM="},
+                    {"url":"turn:global.turn.twilio.com:443?transport=tcp","username":"abf02c35e539434012b71e2ace210512ae18c614876359567bcde0ef43faf8d5","urls":"turn:global.turn.twilio.com:443?transport=tcp","credential":"2uAYY3xLH0Uj+CNn2580pVDfNZQssSUwKHwh0QPaKaM="}]
             };
             pc = new RTCPeerConnection(restartConfig);
             pc.onicecandidate = handleIceCandidate;
