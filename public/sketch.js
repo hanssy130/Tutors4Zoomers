@@ -9,13 +9,15 @@ let lines = [];
 let imgURl;
 const roomContainer = document.getElementById("message-container");
 function setup() {
-  canvas = createCanvas(400, 400);
+  canvas = createCanvas(0.75 * windowWidth, 0.5 * windowHeight);
   canvas.id("wb");
+  canvas.parent("whiteboard-holder");
+
   lineArray = [];
 
   socket = io();
 
-  //socket = io.connect('http://localhost:3001/');
+  // socket = io.connect("http://localhost:3001/");
   socket = io.connect(window.location.hostname);
 
   socket.on("line", newLines);

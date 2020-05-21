@@ -1,33 +1,54 @@
 <%- include("partials/header") -%>
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-<title>Signed In | Tutors4Zoomers</title>
-</head>
+    <title>All Users | Tutors4Zoomers</title>
+  </head>
 
 <body>
-
 <%- include("partials/loginNav.ejs") -%>
 
-<% allData.forEach(data => { %>
-    <div class="card" style="width: 18rem;">
-        <div class="card-body">
+<div class="container">
 
-            <p> Status: <%= data.status %> 
-            <br>
-                Name: <%= data.detail.firstName %> <%= data.detail.lastName %>
-            <br>
-                Education: <%= data.detail.education %>
-            <br>
-                Major: <%= data.detail.major %>
-            </p>
-            <form action="/sendemail" method="POST">
-                <input type="text" name="email" id="" hidden value="<%= data.detail.email %>">
-                <button>Contact</button>
-            </form>
-            
+    <section class="hero is-success">
+        <div class="hero-body">
+            <h1 class="title">All Users</h1>
+            <h2 class="subtitle">Find someone who suits your needs and send an automatically generated contact request email.
+        </h2>
         </div>
+    </section>
+    <br /><br />
+
+    <div class="block">
+        <center>
+        <table class="table is-striped">
+          <thead>
+            <tr>
+                <th>Education</th>
+                <th>Major</th>
+                <th>Tutor or Student?</th>
+                <th>
+                    Send an email to request contact.
+                </th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <% allData.forEach(data => { %>
+                <tr>
+                    <td><%= data.detail.education %></td>
+                    <td><%= data.detail.major %></td>
+                    <td style="text-align:center;"><%= data.status %></td>
+                    <td style="text-align:center;">
+                        <form action="/sendemail" method="POST">
+                        <input type="text" name="email" id="" hidden value="<%= data.detail.email %>">
+                        <button class="button">Contact</button>
+                        </form>
+                    </td>
+                </tr>
+                <% }) %>
+          </tbody>
+        </table>
+    </center>
     </div>
-<% }) %>
 
-
+</div>
 
 <%- include("partials/footer") -%>

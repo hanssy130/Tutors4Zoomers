@@ -43,6 +43,15 @@ body {
   line-height: 200px;
 }
 
+td,
+th {
+  text-align: center !important;
+}
+
+#user-list {
+  text-align: center !important;
+}
+
 footer {
   position: relative;
   bottom: 0px;
@@ -51,5 +60,3 @@ footer {
   font-size: 0.8em;
   text-align: right;
 }
-
-

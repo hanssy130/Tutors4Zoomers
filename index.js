@@ -8,16 +8,18 @@ const nodemailer = require("nodemailer");
 const methodOverride = require("method-override");
 const LocalStrategy = require("passport-local");
 const passportLocalMongoose = require("passport-local-mongoose");
-const upload = require('express-fileupload');
-const cloudinary = require('cloudinary').v2;
+const upload = require("express-fileupload");
+const cloudinary = require("cloudinary").v2;
 
 // Initialize Express
 // =========================================
 const app = express();
 const server = require("http").Server(app);
-app.use(upload({
-  useTempFiles:  true
-}));
+app.use(
+  upload({
+    useTempFiles: true,
+  })
+);
 
 // Initialize port
 // ==========================================
@@ -40,9 +42,9 @@ app.use(methodOverride("_method"));
 // Cloudinary config
 //======================================
 cloudinary.config({
-  cloud_name: 'dprpcrp7n',
-  api_key: '376436784342749',
-  api_secret: '9eZqrbd0_77WGybe8zd88sh9LSg'
+  cloud_name: "dprpcrp7n",
+  api_key: "376436784342749",
+  api_secret: "9eZqrbd0_77WGybe8zd88sh9LSg",
 });
 
 // Initialize Mongoose
@@ -50,18 +52,18 @@ cloudinary.config({
 const dbUsername = "gyang";
 const dbPassword = "123123123";
 mongoose.connect(
-    `mongodb+srv://${dbUsername}:${dbPassword}@cluster0-p9khr.mongodb.net/T4Z`,
-    { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false }
+  `mongodb+srv://${dbUsername}:${dbPassword}@cluster0-p9khr.mongodb.net/T4Z`,
+  { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false }
 );
 
 // Initialize Passport
 // ==========================================
 app.use(
-    require("express-session")({
-      secret: "Sign Up test for",
-      resave: false,
-      saveUninitialized: false,
-    })
+  require("express-session")({
+    secret: "Sign Up test for",
+    resave: false,
+    saveUninitialized: false,
+  })
 );
 app.use(passport.initialize());
 app.use(passport.session());
@@ -92,11 +94,11 @@ passport.deserializeUser(User.deserializeUser());
 // ================================================
 
 const transporter = nodemailer.createTransport({
-  service: 'gmail',
+  service: "gmail",
   auth: {
-    user: 'tutor4zoomer@gmail.com',
-    pass: "yrN5aPpE"
-  }
+    user: "tutor4zoomer@gmail.com",
+    pass: "yrN5aPpE",
+  },
 });
 
 // Landing Page
@@ -119,12 +121,12 @@ app.get("/faillogin", (req, res) => {
   });
 });
 app.post(
-    "/login",
-    passport.authenticate("local", {
-      successRedirect: "/signin",
-      failureRedirect: "/faillogin",
-    }),
-    (req, res) => {}
+  "/login",
+  passport.authenticate("local", {
+    successRedirect: "/signin",
+    failureRedirect: "/faillogin",
+  }),
+  (req, res) => {}
 );
 
 // Sign Up
@@ -138,29 +140,29 @@ app.post("/signup", (req, res) => {
   req.body.username;
   req.body.password;
   User.register(
-      new User({
-        username: req.body.username,
-        status: req.body.type,
-        detail: {
-          firstName: req.body.firstName,
-          lastName: req.body.lastName,
-          age: req.body.age,
-          email: req.body.email,
-          education: req.body.education,
-          major: req.body.major,
-        },
-      }),
-      req.body.password,
-      (err, user) => {
-        if (err) {
-          return res.render("signup", {
-            errorMessage: "A user with the given username is already registered",
-          });
-        }
-        passport.authenticate("local")(req, res, () => {
-          res.redirect("/signin");
+    new User({
+      username: req.body.username,
+      status: req.body.type,
+      detail: {
+        firstName: req.body.firstName,
+        lastName: req.body.lastName,
+        age: req.body.age,
+        email: req.body.email,
+        education: req.body.education,
+        major: req.body.major,
+      },
+    }),
+    req.body.password,
+    (err, user) => {
+      if (err) {
+        return res.render("signup", {
+          errorMessage: "A user with the given username is already registered",
         });
       }
+      passport.authenticate("local")(req, res, () => {
+        res.redirect("/signin");
+      });
+    }
   );
 });
 
@@ -179,15 +181,15 @@ app.put("/userprofileUpdate", checkAuthenticated, (req, res) => {
   userID = req.user._id;
 
   User.findByIdAndUpdate(
-      userID,
-      { status: req.body.type, detail: req.body.detail },
-      (err, updatedUser) => {
-        if (err) {
-          res.send("failed");
-        } else {
-          res.redirect("/userprofile");
-        }
+    userID,
+    { status: req.body.type, detail: req.body.detail },
+    (err, updatedUser) => {
+      if (err) {
+        res.send("failed");
+      } else {
+        res.redirect("/userprofile");
       }
+    }
   );
 });
 
@@ -201,42 +203,41 @@ app.delete("/destoryprofile", checkAuthenticated, (req, res) => {
   });
 });
 
-
 // booking
 // =========================================
 
 app.get("/booking", checkAuthenticated, (req, res) => {
   User.find({}, (err, allData) => {
     if (err) {
-      console.log(err)
+      console.log(err);
     } else {
-      res.render("booking", {allData : allData})
+      res.render("booking", { allData: allData });
     }
-  })
+  });
 });
 
 app.post("/sendemail", checkAuthenticated, (req, res) => {
-  sender = req.user.detail.email
-  receiver = req.body.email
+  sender = req.user.detail.email;
+  receiver = req.body.email;
   mailOption = {
-    from: "tutor4zoomer@gmail.com", 
-    to: receiver, 
-    subject: "Booking appointment", 
+    from: "tutor4zoomer@gmail.com",
+    to: receiver,
+    subject: "Booking appointment",
     text: `
     Dear Tutor,
 
     A student would like to schedule a tutoring session with you.
     Please e-mail the student back at ${sender} to schedule an appointment.
-    `, 
-  }
+    `,
+  };
   transporter.sendMail(mailOption, (err, info) => {
     if (err) {
-      console.log(err)
+      console.log(err);
     } else {
-      res.redirect("/booking")
+      res.redirect("/booking");
     }
   });
-})
+});
 
 // Logout
 // =========================================
@@ -261,12 +262,15 @@ function checkAuthenticated(req, res, next) {
 app.post("/images", function (req, res) {
   let currentSocket = req.body.socketName;
   const file = req.files.filename;
-  cloudinary.uploader.upload(file.tempFilePath).then(result=> {
-    console.log(result.url);
-    io.sockets.to(currentSocket).emit('updateImg', result.url);
-  }).catch(err=>{
-    console.log(err);
-  });
+  cloudinary.uploader
+    .upload(file.tempFilePath)
+    .then((result) => {
+      console.log(result.url);
+      io.sockets.to(currentSocket).emit("updateImg", result.url);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
   res.status(204).send();
 });
 
@@ -314,7 +318,7 @@ io.on("connection", (socket) => {
   socket.on("lineArray", updateLineArray);
   socket.on("delete", tester);
   socket.on("weight", updateWeight);
-  
+
   //Chatroom
   // ==========================================
   socket.on("addUser", (username) => {
@@ -322,46 +326,48 @@ io.on("connection", (socket) => {
     socket.username = username;
     user.push(username);
     //Announce user has joined in
-    io.emit("updateChat", socket.username, " has joined")
+    io.emit("updateChat", socket.username, " has joined");
     //Update user online status
-    io.emit("updateStatus", user)
+    io.emit("updateStatus", user);
     io.emit("updateVideo", user);
-    io.emit("connectVideo", user)
-  })
+    io.emit("connectVideo", user);
+  });
   socket.on("sendChat", (msg) => {
-    console.log(msg)
-    io.emit("updateChat", socket.username, ": " + msg)
-  })
-  socket.on("disconnect", ()=> {
-    let index = user.indexOf(socket.username)
+    console.log(msg);
+    io.emit("updateChat", socket.username, ": " + msg);
+  });
+  socket.on("disconnect", () => {
+    let index = user.indexOf(socket.username);
     user.splice(index, 1);
-    io.emit("updateStatus", user)
-  })
+    io.emit("updateStatus", user);
+  });
   // convenience function to log server messages on the client
   function log() {
-    var array = ['Message from server:'];
+    var array = ["Message from server:"];
     array.push.apply(array, arguments);
-    socket.emit('log', array);
+    socket.emit("log", array);
   }
 
-  socket.on('message', function(message) {
-    log('Client said: ', message);
+  socket.on("message", function (message) {
+    log("Client said: ", message);
     // for a real app, would be room-only (not broadcast)
-    socket.broadcast.emit('message', message);
+    socket.broadcast.emit("message", message);
   });
 
-  socket.on('create or join', function(room) {
-    log('Received request to create or join room ' + room);
+  socket.on("create or join", function (room) {
+    log("Received request to create or join room " + room);
 
     let clientsInRoom = io.sockets.adapter.rooms[room];
-    let numClients = clientsInRoom ? Object.keys(clientsInRoom.sockets).length : 0;
-    log('Room ' + room + ' now has ' + numClients + ' client(s)');
+    let numClients = clientsInRoom
+      ? Object.keys(clientsInRoom.sockets).length
+      : 0;
+    log("Room " + room + " now has " + numClients + " client(s)");
 
     //NOTE: need fixing to allow multiple users to join in
     if (numClients === 0) {
       socket.join(room);
-      log('Client ID ' + socket.id + ' created room ' + room);
-      socket.emit('created', room, socket.id);
+      log("Client ID " + socket.id + " created room " + room);
+      socket.emit("created", room, socket.id);
 
       // } else if (numClients === 1) {
       //   log('Client ID ' + socket.id + ' joined room ' + room);
@@ -373,20 +379,20 @@ io.on("connection", (socket) => {
       //   socket.emit('full', room);
       // }
     } else {
-        log('Client ID ' + socket.id + ' joined room ' + room);
-        io.sockets.in(room).emit('join', room);
-        socket.join(room);
-        socket.emit('joined', room, socket.id);
-        io.sockets.in(room).emit('ready');
+      log("Client ID " + socket.id + " joined room " + room);
+      io.sockets.in(room).emit("join", room);
+      socket.join(room);
+      socket.emit("joined", room, socket.id);
+      io.sockets.in(room).emit("ready");
     }
   });
 
-  socket.on('ipaddr', function() {
+  socket.on("ipaddr", function () {
     var ifaces = os.networkInterfaces();
     for (var dev in ifaces) {
-      ifaces[dev].forEach(function(details) {
-        if (details.family === 'IPv4' && details.address !== '127.0.0.1') {
-          socket.emit('ipaddr', details.address);
+      ifaces[dev].forEach(function (details) {
+        if (details.family === "IPv4" && details.address !== "127.0.0.1") {
+          socket.emit("ipaddr", details.address);
         }
       });
     }
