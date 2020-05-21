@@ -3,38 +3,85 @@ let express = require('express');
 // make the function
 let app = express();
 // listen on port 3000
-let http = require("http").Server(app).listen(3000);
+const server = require("http").Server(app);
 let upload = require('express-fileupload');
+const io = require('socket.io')(server);
+const cloudinary = require('cloudinary').v2;
+app.use(upload({
+    useTempFiles:  true
+}));
+console.log("server is running");
+
+// io will store messages from/to server.js
+app.set('views', './viewss');
+app.set('view engine','ejs');
 // app should host in the directory 'public'
 app.use(express.static('public'));
-app.use(upload());
-console.log("server is running");
-let socket = require('socket.io');
-// io will store messages from/to server.js
-let io = socket(http);
+app.use(express.urlencoded({extended:true}));
+// io.sockets.on('connection', newConnection);
 
-io.sockets.on('connection', newConnection);
 
-app.post("/", function (req, res) {
-    if(req.files){
-        let file = req.files.filename;
-        let filename = file.name;
-        console.log(file);
-        file.mv("./public/images/" + filename, function (err) {
-            if (err) {
-                console.log(err);
-                res.send("error fam");
-            } else {
-                console.log("image uploaded");
-                io.sockets.emit('updateImg', filename);
-            }
-        })
+
+
+// list of rooms
+const rooms = {name: {}};
+
+// when the page first renders
+app.get('/', (req,res) => {
+    console.log(rooms);
+    res.render('index', {rooms: rooms});
+});
+
+app.post('/room', (req, res) => {
+    console.log("added room");
+    // if room exists return to room list
+    if (rooms[req.body.room] != null) {
+        return res.redirect('/');
     }
-    //res.end();
+    // add new room
+    rooms[req.body.room] = { users: {}};
+    res.redirect(req.body.room);
+    console.log("redirected");
+    // send message that new room was made
+    io.emit('room-created', req.body.room);
+});
+
+app.get('/:room', (req, res) => {
+    // if rooms doesn't exist return to room list
+    if (rooms[req.params.room] == null) {
+         return res.redirect('/');
+    }
+    console.log(req.params.room);
+    res.render('room', {roomName : req.params.room})
+});
+
+server.listen(3000);
+
+
+cloudinary.config({
+    cloud_name: 'dprpcrp7n',
+    api_key: '376436784342749',
+    api_secret: '9eZqrbd0_77WGybe8zd88sh9LSg'
+});
+
+app.post("/images", function (req, res) {
+    let currentSocket = req.body.socketName;
+    console.log("SOCKET: " + currentSocket);
+    const file = req.files.filename;
+    console.log(file);
+    cloudinary.uploader.upload(file.tempFilePath).then(result=> {
+        console.log("NICE");
+        console.log(result.url);
+        io.sockets.to(currentSocket).emit('updateImg', result.url);
+    }).catch(err=>{
+        console.log("unfortunate");
+        console.log(err);
+    });
     res.status(204).send();
 });
 
-function newConnection(socket) {
+
+io.on('connection', socket => {
     console.log('new connection: ' + socket.id);
 
     socket.on('mouse', mouseMsg);
@@ -46,45 +93,59 @@ function newConnection(socket) {
     socket.on('delete', tester);
     socket.on('weight', updateWeight);
 
-    function tester(){
-        socket.broadcast.emit('delete');
+
+    socket.on('new-user', room => {
+        // joins the user to the room
+        socket.join(room);
+    });
+
+    function tester(room, data){
+        // send to specific room
+        socket.to(room).broadcast.emit('delete', data);
     }
 
-    function updateLinesLength(data) {
+    function updateLinesLength(room,data) {
         // send data back out to others
-        socket.broadcast.emit('lineLengths', data);
+        // send to specific room
+        socket.to(room).broadcast.emit('lineLengths',  data);
     }
 
-    function updateLineArray(data) {
+    function updateLineArray(room,data) {
         // send data back out to others
-        socket.broadcast.emit('lineArray', data);
+        // send to specific room
+        socket.to(room).broadcast.emit('lineArray',  data);
     }
 
-    function mouseMsg(data) {
+    function mouseMsg(room,data) {
         // send data back out to others
-        socket.broadcast.emit('mouse',data);
+        // send to specific room
+        socket.to(room).broadcast.emit('mouse', data);
         console.log(data);
     }
 
-    function lineMsg(data) {
+    function lineMsg(room,data) {
         // send data back out to others
-        socket.broadcast.emit('line',data);
+        // send to specific room
+        socket.to(room).broadcast.emit('line', data);
     }
 
     function colourUpdate(data) {
         // send data back out to others
-        socket.broadcast.emit('colour', data);
+        // send to specific room
+        socket.to(room).broadcast.emit('colour', data);
     }
 
     function clearCanvas(data) {
         // send data back out to others
-        socket.broadcast.emit('clear',data);
+        // send to specific room
+        socket.to(room).broadcast.emit('clear', data);
     }
 
     function updateWeight(data) {
         // send data back out to others
-        socket.broadcast.emit('weight',data);
+        // send to specific room
+        socket.to(room).broadcast.emit('weight', data);
     }
 
 
-}
+})

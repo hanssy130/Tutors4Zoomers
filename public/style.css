@@ -1,112 +1,55 @@
-body {
-  font-family: "Segoe UI", Arial, sans-serif;
-  font-weight: 400;
-  margin: 10px 0;
-}
-
-#navigationbar {
-  background-color: #33bbff;
-  display: grid;
-  grid-gap: 10px 20px;
-  grid-template-columns: 3fr 250px 80px 80px 80px 80px 80px 3fr;
-  align-items: center;
-}
-
-.navibar {
-  text-decoration: none;
-  color: white;
-  align-self: center;
-  justify-self: center;
-}
-
-#landingphoto {
-  text-align: center;
-}
-
-.content {
-  width: 1000px;
-  display: flex;
-  flex-direction: column;
-  position: absolute;
-  left: 50%;
-  transform: translate(-50%, 0%);
-}
-
-h2 {
-  font-size: 2.5em;
-}
-
-.description {
-  width: 800px;
-  position: relative;
-  left: 100px;
-}
-
-footer {
-  position: absolute;
-  top: 2000px;
-  color: grey;
-  font-style: italic;
-  font-size: 0.8em;
-  right: 1%;
-}
-
-.portalbutton {
-  color: white;
-  background-color: lightblue;
-  font-size: 20px;
-  padding: 10px 24px;
-  border-radius: 4px;
-  border: lightblue;
-  transition-duration: 0.4s;
-}
-
-.portalbutton:hover {
-  background-color: white;
-  color: lightblue;
-}
-
-#easteregg {
-  position: absolute;
-  top: 50px;
-  left: 50px;
-  height: 100px;
-  width: 100px;
-  border: 5px solid green;
-  background-color: aqua;
-  visibility: visible;
-  opacity: 0.2;
-}
-
+/* Easter Egg */
 #egg1 {
   opacity: 0.5;
 }
 
-.teamImage {
-  width: 250px;
+/* Navigation Bar */
+.navbar-menu {
+  background-color: #38b6ff;
 }
 
-#teamImageHolder {
+.navbar-brand {
+  background-color: #38b6ff;
+}
+
+.navbar-item {
+  background-color: #38b6ff;
+}
+
+body {
+  background-color: #38b6ff;
+}
+
+.container {
+  background-color: white;
+  padding: 2%;
+}
+
+/* Centers "About Us" */
+#About_Us,
+#Features {
   text-align: center;
 }
+/* End */
 
-@media all and (max-width: 400px) {
-  /*Mobile View (< 400px)*/
-
-  .content {
-    width: 100%;
-  }
-
-  .description {
-    width: 100%;
-  }
-
-  .item {
-    width: 100%;
-  }
-
-  h2 {
-    color: red;
-    font-size: 8px;
-  }
+.features-list {
+  height: 200px;
+  width: 200px;
+  background-color: hsl(141, 71%, 48%);
+  border-radius: 50%;
+  display: inline-block;
+  margin: 25px;
+  color: white;
+  line-height: 200px;
 }
+
+footer {
+  position: relative;
+  bottom: 0px;
+  color: black;
+  font-style: italic;
+  font-size: 0.8em;
+  text-align: right;
+}
+
+

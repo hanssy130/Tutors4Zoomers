@@ -8,19 +8,22 @@ let linesLength = [];
 let lineCount = 0;
 let lines = [];
 let imgURl;
+const roomContainer = document.getElementById('message-container');
 function setup() {
     canvas = createCanvas(400, 400);
     canvas.id("wb");
     lineArray = [];
     socket = io.connect('http://localhost:3000/');
     socket.on('line', newLines);
-    socket.on('colour', updateColour);
-    socket.on('clear',clearCanvas);
-    socket.on('lineLengths', updateLinesLength);
-    socket.on('lineArray', updateLineArray);
-    socket.on('delete', deleteNewest);
-    socket.on('weight', updateWeightLocal);
-    socket.on('updateImg', updateImgOnline);
+    socket.on('colour',  updateColour);
+    socket.on('clear', clearCanvas);
+    socket.on('lineLengths',  updateLinesLength);
+    socket.on('lineArray',  updateLineArray);
+    socket.on('delete',  deleteNewest);
+    socket.on('weight',  updateWeightLocal);
+    socket.on('updateImg',  updateImg);
+    // sends a new user message and the room name
+    socket.emit('new-user', roomName);
 }
 
 function updateWeightLocal(data) {
@@ -87,7 +90,7 @@ function sendMouseData() {
     }
     //console.log(coord);
     // send the coords to other users
-    socket.emit('line', coord);
+    socket.emit('line',roomName, coord);
 }
 
 function mousePressed() {
@@ -143,7 +146,7 @@ function keyPressed() {
     // remove all elements from the canvas
     if (key === 'e') {
         clearCanvas();
-        socket.emit('clear', 'clear');
+        socket.emit('clear',roomName, 'clear');
     }
     if(key === 'c') {
         for (let x = 0; x < lineArray.length; x++) {
@@ -152,9 +155,9 @@ function keyPressed() {
     }
 
     if (key === 'z') {
-        socket.emit('lineLengths', linesLength);
-        socket.emit('lineArray', lineArray);
-        socket.emit('delete');
+        socket.emit('lineLengths',roomName, linesLength);
+        socket.emit('lineArray',roomName, lineArray);
+        socket.emit('delete', roomName, 'delete');
         console.log("SENT DELETE");
         deleteNewest()
     }
@@ -164,67 +167,81 @@ function keyPressed() {
 document.getElementById("red").addEventListener("click", function(){
     console.log("red");
     currentColour = 'red';
-    socket.emit('colour', currentColour);
+    socket.emit('colour',roomName, currentColour);
 });
 
 //change to yellow
 document.getElementById("yellow").addEventListener("click", function(){
     currentColour = 'yellow';
-    socket.emit('colour', currentColour);
+    socket.emit('colour',roomName, currentColour);
 });
 
 //change to yellow
 document.getElementById("black").addEventListener("click", function(){
     currentColour = 'black';
-    socket.emit('colour', currentColour);
+    socket.emit('colour',roomName, currentColour);
 });
 
 //change to eraser
 document.getElementById("eraser").addEventListener("click", function(){
     currentColour = 'white';
 
-    socket.emit('colour', currentColour);
+    socket.emit('colour',roomName, currentColour);
 });
 
 // change stroke weight
 document.getElementById("small").addEventListener("click", function(){
     currentWeight = 3;
-    socket.emit('weight', currentWeight);
+    socket.emit('weight',roomName, currentWeight);
 });
 
 document.getElementById("regular").addEventListener("click", function(){
     currentWeight = 5;
-    socket.emit('weight', currentWeight);
+    socket.emit('weight',roomName, currentWeight);
 });
 
 document.getElementById("large").addEventListener("click", function(){
     currentWeight = 7;
-    socket.emit('weight', currentWeight);
+    socket.emit('weight',roomName, currentWeight);
+});
+
+let names = document.getElementById('submit');
+let filename;
+names.addEventListener("click", function () {
+    let file;
+    file = document.getElementById('fileUp');
+    console.log(file.files.item(0).name);
+    filename = file.files.item(0).name;
 });
 
 function updateImg(data) {
-        let names = document.getElementById('fileUp');
-        console.log(names.files.item(0).name);
-        let url = names.files.item(0).name;
-        let img = "http://localhost:3000/images/" + url;
-        console.log(img);
-        let myCanvas = document.getElementById("wb");
-        imgURl = 'https://www.enchantedlearning.com/generate/thumbnails/multiply-1-1-6.gif';
-        myCanvas.style.background = "url('https://www.enchantedlearning.com/generate/thumbnails/multiply-1-1-6.gif')";
-        myCanvas.style.backgroundSize = "100% 100%";
-        // let image = loadImage('https://d1i4t8bqe7zgj6.cloudfront.net/09-28-2016/t_1475094050758_name_pepe.jpg');
-        // //canvas.drawingContext.globalCompositeOperation = 'destination-over';
-        // background(image);
-        console.log("bruh it worked?!");
-}
-
-function updateImgOnline(){
+    let url = data;
     let myCanvas = document.getElementById("wb");
-    imgURl = 'https://www.enchantedlearning.com/generate/thumbnails/multiply-1-1-6.gif';
-    myCanvas.style.background = "url('https://www.enchantedlearning.com/generate/thumbnails/multiply-1-1-6.gif')";
+    myCanvas.style.background = "url('" + url + "')";
     myCanvas.style.backgroundSize = "100% 100%";
-    // let image = loadImage('https://d1i4t8bqe7zgj6.cloudfront.net/09-28-2016/t_1475094050758_name_pepe.jpg');
-    // //canvas.drawingContext.globalCompositeOperation = 'destination-over';
-    // background(image);
-    console.log("bruh it worked?! ONLINE");
+    console.log("bruh it worked?!");
 }
+const CLOUDINARY_UPLOAD_PRESET = 'bnxpusjc';
+const CLOUDINARY_URL = 'https://api.cloudinary.com/v1_1/dprpcrp7n/upload';
+let file_upload = document.getElementById('fileUp');
+let submitButton = document.getElementById('submit');
+
+// submitButton.addEventListener('click', function() {
+//     let file = file_upload.files[0];
+//     console.log(file_upload);
+//     let form = new FormData();
+//     form.append('file', file);
+//     form.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+//     form.append('socket', roomName);
+//     axios({
+//         url: CLOUDINARY_URL,
+//         method: 'POST',
+//         data: form
+//     }).then(res => {
+//         console.log("YAY");
+//     }).catch(err=> {
+//         console.log(err);
+//     })
+// });
+
+

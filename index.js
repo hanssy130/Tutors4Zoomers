@@ -4,14 +4,20 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const passport = require("passport");
+const nodemailer = require("nodemailer");
 const methodOverride = require("method-override");
 const LocalStrategy = require("passport-local");
 const passportLocalMongoose = require("passport-local-mongoose");
+const upload = require('express-fileupload');
+const cloudinary = require('cloudinary').v2;
 
 // Initialize Express
 // =========================================
 const app = express();
 const server = require("http").Server(app);
+app.use(upload({
+  useTempFiles:  true
+}));
 
 // Initialize port
 // ==========================================
@@ -23,7 +29,6 @@ server.listen(port, "0.0.0.0", () => {
 
 const socket = require("socket.io");
 const io = socket.listen(server);
-io.sockets.on("connection", newConnection);
 
 // Initalize view engine and body parser
 // =========================================
@@ -32,23 +37,31 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(__dirname + "/public"));
 app.use(methodOverride("_method"));
 
+// Cloudinary config
+//======================================
+cloudinary.config({
+  cloud_name: 'dprpcrp7n',
+  api_key: '376436784342749',
+  api_secret: '9eZqrbd0_77WGybe8zd88sh9LSg'
+});
+
 // Initialize Mongoose
 // =========================================
 const dbUsername = "gyang";
 const dbPassword = "123123123";
 mongoose.connect(
-  `mongodb+srv://${dbUsername}:${dbPassword}@cluster0-p9khr.mongodb.net/T4Z`,
-  { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false }
+    `mongodb+srv://${dbUsername}:${dbPassword}@cluster0-p9khr.mongodb.net/T4Z`,
+    { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false }
 );
 
 // Initialize Passport
 // ==========================================
 app.use(
-  require("express-session")({
-    secret: "Sign Up test for",
-    resave: false,
-    saveUninitialized: false,
-  })
+    require("express-session")({
+      secret: "Sign Up test for",
+      resave: false,
+      saveUninitialized: false,
+    })
 );
 app.use(passport.initialize());
 app.use(passport.session());
@@ -75,6 +88,17 @@ passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
+// nodemailer Initialize
+// ================================================
+
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: 'tutor4zoomer@gmail.com',
+    pass: "yrN5aPpE"
+  }
+});
+
 // Landing Page
 // ======================================
 app.get("/", (req, res) => {
@@ -95,12 +119,12 @@ app.get("/faillogin", (req, res) => {
   });
 });
 app.post(
-  "/login",
-  passport.authenticate("local", {
-    successRedirect: "/signin",
-    failureRedirect: "/faillogin",
-  }),
-  (req, res) => {}
+    "/login",
+    passport.authenticate("local", {
+      successRedirect: "/signin",
+      failureRedirect: "/faillogin",
+    }),
+    (req, res) => {}
 );
 
 // Sign Up
@@ -114,37 +138,30 @@ app.post("/signup", (req, res) => {
   req.body.username;
   req.body.password;
   User.register(
-    new User({
-      username: req.body.username,
-      status: req.body.type,
-      detail: {
-        firstName: req.body.firstName,
-        lastName: req.body.lastName,
-        age: req.body.age,
-        email: req.body.email,
-        education: req.body.education,
-        major: req.body.major,
-      },
-    }),
-    req.body.password,
-    (err, user) => {
-      if (err) {
-        return res.render("signup", {
-          errorMessage: "A user with the given username is already registered",
+      new User({
+        username: req.body.username,
+        status: req.body.type,
+        detail: {
+          firstName: req.body.firstName,
+          lastName: req.body.lastName,
+          age: req.body.age,
+          email: req.body.email,
+          education: req.body.education,
+          major: req.body.major,
+        },
+      }),
+      req.body.password,
+      (err, user) => {
+        if (err) {
+          return res.render("signup", {
+            errorMessage: "A user with the given username is already registered",
+          });
+        }
+        passport.authenticate("local")(req, res, () => {
+          res.redirect("/signin");
         });
       }
-      passport.authenticate("local")(req, res, () => {
-        res.redirect("/signin");
-      });
-    }
   );
-});
-
-// Tutoring Sessions
-// ========================================
-app.get("/session/:sessionID/", (req, res) => {
-  let sessionID = req.params.sessionID;
-  res.render("session");
 });
 
 // After user logged in
@@ -162,15 +179,15 @@ app.put("/userprofileUpdate", checkAuthenticated, (req, res) => {
   userID = req.user._id;
 
   User.findByIdAndUpdate(
-    userID,
-    { status: req.body.type, detail: req.body.detail },
-    (err, updatedUser) => {
-      if (err) {
-        res.send("failed");
-      } else {
-        res.redirect("/userprofile");
+      userID,
+      { status: req.body.type, detail: req.body.detail },
+      (err, updatedUser) => {
+        if (err) {
+          res.send("failed");
+        } else {
+          res.redirect("/userprofile");
+        }
       }
-    }
   );
 });
 
@@ -183,6 +200,43 @@ app.delete("/destoryprofile", checkAuthenticated, (req, res) => {
     }
   });
 });
+
+
+// booking
+// =========================================
+
+app.get("/booking", checkAuthenticated, (req, res) => {
+  User.find({}, (err, allData) => {
+    if (err) {
+      console.log(err)
+    } else {
+      res.render("booking", {allData : allData})
+    }
+  })
+});
+
+app.post("/sendemail", checkAuthenticated, (req, res) => {
+  sender = req.user.detail.email
+  receiver = req.body.email
+  mailOption = {
+    from: "tutor4zoomer@gmail.com", 
+    to: receiver, 
+    subject: "Booking appointment", 
+    text: `
+    Dear Tutor,
+
+    A student would like to schedule a tutoring session with you.
+    Please e-mail the student back at ${sender} to schedule an appointment.
+    `, 
+  }
+  transporter.sendMail(mailOption, (err, info) => {
+    if (err) {
+      console.log(err)
+    } else {
+      res.redirect("/booking")
+    }
+  });
+})
 
 // Logout
 // =========================================
@@ -202,12 +256,56 @@ function checkAuthenticated(req, res, next) {
     });
   }
 }
+// Upload Images
+//=========================================
+app.post("/images", function (req, res) {
+  let currentSocket = req.body.socketName;
+  const file = req.files.filename;
+  cloudinary.uploader.upload(file.tempFilePath).then(result=> {
+    console.log(result.url);
+    io.sockets.to(currentSocket).emit('updateImg', result.url);
+  }).catch(err=>{
+    console.log(err);
+  });
+  res.status(204).send();
+});
+
+// Rooms
+// =============================================
+// list of rooms
+const rooms = {};
+
+app.get("/session", (req, res) => {
+  res.render("sessionlist", { rooms: rooms });
+});
+
+app.post("/session/room", (req, res) => {
+  // if room exists return to room list
+  if (rooms[req.body.room] != null) {
+    return res.redirect("/");
+  }
+  // add new room
+  rooms[req.body.room] = { users: {} };
+  res.redirect(req.body.room);
+  console.log("redirected");
+  // send message that new room was made
+  io.emit("room-created", req.body.room);
+});
+
+app.get("/session/:room", (req, res) => {
+  // if rooms doesn't exist return to room list
+  if (rooms[req.params.room] == null) {
+    return res.redirect("/session");
+  }
+  res.render("session", { roomName: req.params.room });
+});
 
 // Socket
 // ==========================================
+
 let user = [];
-function newConnection(socket) {
-  console.log("New connection: " + socket.id);
+io.on("connection", (socket) => {
+  console.log("new connection: " + socket.id);
   socket.on("mouse", mouseMsg);
   socket.on("line", lineMsg);
   socket.on("colour", colourUpdate);
@@ -216,7 +314,7 @@ function newConnection(socket) {
   socket.on("lineArray", updateLineArray);
   socket.on("delete", tester);
   socket.on("weight", updateWeight);
-
+  
   //Chatroom
   // ==========================================
   socket.on("addUser", (username) => {
@@ -294,37 +392,56 @@ function newConnection(socket) {
     }
   });
 
+  socket.on("new-user", (room) => {
+    // joins the user to the room
+    socket.join(room);
+  });
 
-  function tester() {
-    socket.broadcast.emit("delete");
+  function tester(room, data) {
+    // send to specific room
+    socket.to(room).broadcast.emit("delete", data);
   }
-  function updateLinesLength(data) {
+
+  function updateLinesLength(room, data) {
     // send data back out to others
-    socket.broadcast.emit("lineLengths", data);
+    // send to specific room
+    socket.to(room).broadcast.emit("lineLengths", data);
   }
-  function updateLineArray(data) {
+
+  function updateLineArray(room, data) {
     // send data back out to others
-    socket.broadcast.emit("lineArray", data);
+    // send to specific room
+    socket.to(room).broadcast.emit("lineArray", data);
   }
-  function mouseMsg(data) {
+
+  function mouseMsg(room, data) {
     // send data back out to others
-    socket.broadcast.emit("mouse", data);
+    // send to specific room
+    socket.to(room).broadcast.emit("mouse", data);
     console.log(data);
   }
-  function lineMsg(data) {
+
+  function lineMsg(room, data) {
     // send data back out to others
-    socket.broadcast.emit("line", data);
+    // send to specific room
+    socket.to(room).broadcast.emit("line", data);
   }
-  function colourUpdate(data) {
+
+  function colourUpdate(room, data) {
     // send data back out to others
-    socket.broadcast.emit("colour", data);
+    // send to specific room
+    socket.to(room).broadcast.emit("colour", data);
   }
-  function clearCanvas(data) {
+
+  function clearCanvas(room, data) {
     // send data back out to others
-    socket.broadcast.emit("clear", data);
+    // send to specific room
+    socket.to(room).broadcast.emit("clear", data);
   }
-  function updateWeight(data) {
+
+  function updateWeight(room, data) {
     // send data back out to others
-    socket.broadcast.emit("weight", data);
+    // send to specific room
+    socket.to(room).broadcast.emit("weight", data);
   }
-}
+});
