@@ -55,15 +55,12 @@
       }
 
       #conversation {
-        margin: auto;
-        background-color: white;
-        border-radius: 10px;
         overflow: scroll;
         height: 25vh;
+        background-color: white;
         text-align: left;
         padding: 10px;
       }
-
 
       @media only screen and {max-width: 768px}
         #videoContainer {
@@ -115,10 +112,24 @@
           </div>
 
           <div class="column">
+            <div id="conversation"></div>
+            <br />
+            <div class="field has-addons">
+              <p class="control">
+                <input
+                  id="msg"
+                  class="input"
+                  type="text"
+                  placeholder="Type message"
+                />
+              </p>
+              <p class="control">
+                <input id="sendMsg" type="button" class="button" value="Send" />
+              </p>
+            </div>
             <div>
-              <div id="conversation"></div>
-              <input id="msg" type="text" />
-              <input id="sendMsg" type="button" class="button" value="Send" />
+              <p>Users in room:</p>
+              <div id="onlineUser"></div>
             </div>
           </div>
 
