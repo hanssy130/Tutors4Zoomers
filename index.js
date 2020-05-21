@@ -260,15 +260,11 @@ function checkAuthenticated(req, res, next) {
 //=========================================
 app.post("/images", function (req, res) {
   let currentSocket = req.body.socketName;
-  console.log("SOCKET: " + currentSocket);
   const file = req.files.filename;
-  console.log(file);
   cloudinary.uploader.upload(file.tempFilePath).then(result=> {
-    console.log("NICE");
     console.log(result.url);
     io.sockets.to(currentSocket).emit('updateImg', result.url);
   }).catch(err=>{
-    console.log("unfortunate");
     console.log(err);
   });
   res.status(204).send();
@@ -280,12 +276,10 @@ app.post("/images", function (req, res) {
 const rooms = {};
 
 app.get("/session", (req, res) => {
-  console.log(rooms);
   res.render("sessionlist", { rooms: rooms });
 });
 
 app.post("/session/room", (req, res) => {
-  console.log("added room");
   // if room exists return to room list
   if (rooms[req.body.room] != null) {
     return res.redirect("/");
@@ -303,40 +297,6 @@ app.get("/session/:room", (req, res) => {
   if (rooms[req.params.room] == null) {
     return res.redirect("/session");
   }
-  console.log(req.params.room);
-  res.render("session", { roomName: req.params.room });
-});
-
-// Rooms
-// =============================================
-// list of rooms
-const rooms = {};
-
-app.get("/session", (req, res) => {
-  console.log(rooms);
-  res.render("sessionlist", { rooms: rooms });
-});
-
-app.post("/session/room", (req, res) => {
-  console.log("added room");
-  // if room exists return to room list
-  if (rooms[req.body.room] != null) {
-    return res.redirect("/");
-  }
-  // add new room
-  rooms[req.body.room] = { users: {} };
-  res.redirect(req.body.room);
-  console.log("redirected");
-  // send message that new room was made
-  io.emit("room-created", req.body.room);
-});
-
-app.get("/session/:room", (req, res) => {
-  // if rooms doesn't exist return to room list
-  if (rooms[req.params.room] == null) {
-    return res.redirect("/session");
-  }
-  console.log(req.params.room);
   res.render("session", { roomName: req.params.room });
 });
 
