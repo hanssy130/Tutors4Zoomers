@@ -1,135 +1,146 @@
 <%- include("partials/header") -%>
-<title>Home</title>
-</head>
+    <title>Portal | T4Z</title>
+  </head>
 
-<body>
+  <body>
+    <!-- FB share start-->
+    <div id="fb-root"></div>
+    <script
+      async
+      defer
+      crossorigin="anonymous"
+      src="https://connect.facebook.net/en_GB/sdk.js#xfbml=1&version=v7.0"
+    ></script>
+    <!-- FB share end -->
 
-<%- include("partials/navbar.ejs") -%>
+    <%- include("partials/navbar") -%>
 
-<div id="landingphoto">
-  <img src="./resources/landingphotoedited.png" width="1000px" />
-</div>
-
-<div class="content">
-  <div id="How_It_Works" class="item">
-    <h2>How it works</h2>
-    <div class="description">
-      How it works. To be constructed.
-    </div>
-  </div>
-
-  <div id="Features" class="item">
-    <h2>Features</h2>
-    <div class="description">
-      Description of features. To be constructed.
-    </div>
-  </div>
-
-  <div id="About_Us" class="item">
-    <h2>About Us</h2>
-    <div id="teamImageHolder">
-      <img src="./resources/justin.png" id='egg1' class='teamImage'/>
-      <img src="./resources/hans.png" id='egg2' class='teamImage'/>
+    <div class="container">
+      <div id="landingphoto">
+        <img src="./resources/landingphotoedited.png" width="2000px" />
+      </div>
       <br />
-      <img src="./resources/david.png" id='egg3' class='teamImage'/>
-      <img src="./resources/george.png" id='egg4' class='teamImage'/>
+
+      <div id="How_It_Works" class="block">
+        <article class="message is-primary">
+          <div class="message-header">
+            <h3 class="title is-4 has-text-white">How It Works</h3>
+          </div>
+          <div class="message-body">
+            <p>
+              During this COVID-19 crisis, we noticed that some students were
+              not getting enough support at home for their education. Some
+              parents have become their child’s personal assistant, for example.
+              We’ve also noticed that there are a lot of new apps inviting
+              people to help and volunteer their time for those in need. And the
+              best part is, people are helping each other in their communities.
+              COVID-19 has brought out the altruism and generosity of people
+              around us.
+            </p>
+            <br />
+            <p>
+              Our app takes full advantage of these effects, and combines them
+              to create a support system. We’re inviting YOU to sign up as
+              volunteer tutors. On your profile, you can select what grades and
+              courses you would be comfortable teaching. If you sign up as a
+              student, you can browse our list of volunteer tutors and contact
+              them to setup a lesson. Once you confirm your appointment, you can
+              use our online tutor session portal for live video, messaging, and
+              whiteboard collaboration.
+            </p>
+          </div>
+        </article>
+      </div>
+
+      <div id="Features" class="block">
+        <article class="message is-success">
+          <div class="message-header">
+            <h3 class="title is-4 has-text-white">Features</h3>
+          </div>
+          <div class="message-body">
+            <span class="features-list is-5">Interactive Whiteboard</span>
+            <span class="features-list is-5">Online Messaging</span>
+            <span class="features-list is-5">Tutor/Student Booking</span>
+          </div>
+        </article>
+      </div>
+
+      <div id="About_Us" class="block">
+        <article class="message is-warning">
+          <div class="message-header">
+            <h3 class="title is-4 has-text-white">About Us</h3>
+          </div>
+          <div class="message-body">
+            <div id="teamImageHolder">
+              <img src="./resources/justin.png" id="egg1" class="teamImage" />
+              <img src="./resources/hans.png" id="egg2" class="teamImage" />
+              <br />
+              <img src="./resources/david.png" id="egg3" class="teamImage" />
+              <img src="./resources/george.png" id="egg4" class="teamImage" />
+            </div>
+            <br />
+            <h6 class="title is-5">Welcome!</h6>
+            <p>
+              We're four students currently studying Computer Systems Technology
+              at
+              <a href="https://www.bcit.ca/"
+                >BCIT (British Columbia Institute of Technology)</a
+              >. During 2020's COVID-19 crisis, we noticed that students were
+              not getting enough support for their education due to the
+              transition of online schooling. We created Tutors4Zoomers to
+              connect students in need with voluteer tutors. Our mission is to
+              bring help to the students who need and deserve it. Whether you're
+              a tutor or student, we hope that Tutors4Zoomers can help you
+              connect with the right person. Thank you for visiting!
+            </p>
+          </div>
+        </article>
+      </div>
+
+      <div class="block is-info">
+        <div class="card">
+          <div class="card-content">
+            <p class="title">
+              Join the conversation online!
+            </p>
+          </div>
+          <footer class="card-footer">
+            <p class="card-footer-item">
+              <span>
+                <a
+                  href="https://twitter.com/intent/tweet?button_hashtag=Tutors4Zoomers&ref_src=twsrc%5Etfw"
+                  class="twitter-hashtag-button"
+                  data-show-count="false"
+                  >Tweet #Tutors4Zoomers</a
+                >
+                <script
+                  async
+                  src="https://platform.twitter.com/widgets.js"
+                  charset="utf-8"
+                ></script>
+              </span>
+            </p>
+            <p class="card-footer-item">
+              <span
+                class="fb-share-button"
+                data-href="http://tutors4zoomers.herokuapp.com"
+                data-layout="button"
+                data-size="small"
+                ><a
+                  target="_blank"
+                  href="https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2Ftutors4zoomers.herokuapp.com%2F&amp;src=sdkpreparse"
+                  class="fb-xfbml-parse-ignore"
+                  >Share us on Facebook</a
+                >
+              </span>
+            </p>
+          </footer>
+        </div>
+      </div>
+      <br />
     </div>
-    <br />
-    <div class="description">
-      <Strong>Welcome!</Strong> We're four students currently studying
-      Computer Systems Technology at
-      <a href="https://www.bcit.ca/"
-        >BCIT (British Columbia Institute of Technology)</a
-      >. During 2020's COVID-19 crisis, we noticed that students were not
-      getting enough support for their education due to the transition of
-      online schooling. We created Tutors4Zoomers to connect students in
-      need with voluteer tutors. Our mission is to bring help to the
-      students who need and deserve it. Whether you're a tutor or student,
-      we hope that Tutors4Zoomers can help you connect with the right
-      person. Thank you for visiting!
-    </div>
-    <center>
-      <h3>Pitch Video</h3>
-      <iframe
-        width="560"
-        height="315"
-        src="https://www.youtube.com/embed/gzMxrLrSXoI"
-        frameborder="0"
-        allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-        allowfullscreen
-      ></iframe>
-    </center>
-  </div>
-</div>
 
-<script>
-  var eggcounter = 0;
+    <!-- Easter egg script -->
+    <script src="/easteregg.js"></script>
 
-  $("#egg1").click(function() {
-    if (eggcounter == 0) {
-      eggcounter++;
-      document.getElementById("egg1").style.opacity = 1.0;
-      document.getElementById("egg2").style.opacity = 0.5;
-      console.log(eggcounter);
-    }
-  });
-
-  $("#egg2").click(function() {
-    if (eggcounter == 1) {
-      eggcounter++;
-      document.getElementById("egg2").style.opacity = 1.0;
-      document.getElementById("egg3").style.opacity = 0.5;
-      console.log(eggcounter);
-    }
-  });
-
-  $("#egg3").click(function() {
-    if (eggcounter == 2) {
-      eggcounter++;
-      document.getElementById("egg3").style.opacity = 1.0;
-      document.getElementById("egg4").style.opacity = 0.5;
-      console.log(eggcounter);
-    }
-  });
-
-  $("#egg4").click(function() {
-    if (eggcounter == 3) {
-      eggcounter++;
-      document.getElementById("egg4").style.opacity = 1.0;
-      console.log(eggcounter);
-
-      for (i = 0; i < 25; i++) {
-        easterEgg(Math.random()*90 + "%", Math.random()*90 + "%");
-      }
-      window.scrollTo(0,0);
-
-      var zoomerTunes = document.createElement("audio");
-      zoomerTunes.setAttribute('src', './resources/mlg-airhorn.mp3');
-      document.body.appendChild(zoomerTunes);
-    }
-  });
-
-  function easterEgg(x,y) {
-    console.log("easter egg in progress");
-    var zoomer = document.createElement('img');
-    zoomer.setAttribute("src", "https://i.kym-cdn.com/photos/images/original/001/402/574/13b.gif");
-    zoomer.style.position = "absolute";
-    zoomer.style.width = "150px";
-    zoomer.style.left = x;
-    zoomer.style.top = y;
-    zoomer.style.zIndex = "99";
-    zoomer.onclick = function() {
-      zoomer.style.visibility = "hidden";
-    };
-    document.body.appendChild(zoomer);
-  };
-
-  
-</script>
-
-<footer>
-  © Tutors4Zoomers 2020 by Hans Sy, George Yang, Justin Majam, and David
-  Wang.
-</footer>
-
-  <%- include("partials/footer") -%>
+    <%- include("partials/footer") -%>

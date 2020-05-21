@@ -1,73 +1,106 @@
 <%- include("partials/header") -%>
 
-<title>Sign Up</title>
+<title>Sign Up | T4Z</title>
 </head>
 
 <body>
 
-
     <%- include("partials/navbar.ejs") -%>
 
+    <div class="container">
 
-    <div class="d-flex justify-content-center align-items-center login-container">
-        <form class="login-form text-center" action="/signup" method="POST">
-            <div class="form-group mt-3">
-                <input type="text" name="username" class="form-control rounded-pill form-control-lg"
-                    placeholder="Username" required>
+        <section class="hero is-danger">
+            <div class="hero-body">
+                <h1 class="title">Sign Up</h1>
+                <h2 class="subtitle">Fill out the fields below and hit "Sign Up" to register.</h2>
             </div>
-            <div class="form-group">
-                <input type="password" name="password" class="form-control rounded-pill form-control-lg"
-                    placeholder="Password" required>
-            </div>
-            <div class="form-group">
-                <input type="email" name="email" class="form-control rounded-pill form-control-lg" placeholder="Email"
-                    required>
-            </div>
-            <div class="form-group">
-                <input type="text" name="firstName" class="form-control rounded-pill form-control-lg"
-                    placeholder="First Name" required>
-            </div>
-            <div class="form-group">
-                <input type="text" name="lastName" class="form-control rounded-pill form-control-lg"
-                    placeholder="Last Name" required>
-            </div>
-            <div class="form-group">
-                <input type="text" name="age" class="form-control rounded-pill form-control-lg" placeholder="Age"
-                    required>
-            </div>
-            <div class="form-group">
-                <select name="education" id="" required>
-                    <option value="g-8">Grade-8</option>
-                    <option value="g-9">Grade-9</option>
-                    <option value="g-10">Grade-10</option>
-                    <option value="g-11">Grade-11</option>
-                    <option value="g-12">Grade-12</option>
-                    <option value="post_secondary">Post Secondary</option>
-                    <option value="undergraduate">Undergraduate</option>
-                    <option value="master">Master</option>
-                    <option value="doctorate">Doctorate</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <select name="major" id="" required>
-                    <option value="art">Art</option>
-                    <option value="english">English</option>
-                    <option value="math">Math</option>
-                    <option value="science">Science</option>
-                    <option value="socialstudies">Social Studies</option>
+        </section>
+        <br />
+    
+        <div class="block">
+            <form action="/signup" method="POST" class="box">
+                <div class="field">
+                    <label class="label">Username</label>
+                    <input type="text" name="username" class="input" placeholder="Enter Username" required>
+                </div>
+                
+                <div class="field">
+                    <label class="label">Password</label>
+                    <input type="password" name="password" class="input" placeholder="Enter Password" required>
+                </div>
 
-                </select>
-            </div>
-            <div class="form-group">
-                <input type="radio" name="type" class="rounded-pill radio-inline" value="tutor" required>
-                <label for="tutor">Tutor</label>
-                <input type="radio" name="type" class="rounded-pill radio-inline" value="student" required>
-                <label for="type">Student</label>
-            </div>
-            <button type="submit"
-                class="btn mt-4 rounded-pill btn-lg btn-custom btn-block text-uppercase">SignUp</button>
-        </form>
+                <div class="field">
+                    <label class="label">Email</label>
+                    <input type="email" name="email" class="input" placeholder="Enter Email" required>
+                </div>
+
+                <div class="field">
+                    <label class="label">First Name</label>
+                    <input type="text" name="firstName" class="input" placeholder="Enter First Name" required>
+                </div>
+
+                <div class="field">
+                    <label class="label">Last Name</label>
+                    <input type="text" name="lastName" class="input" placeholder="Enter Last Name" required>
+                </div>
+
+                <div class="field">
+                    <label class="label">Age</label>
+                    <input type="text" name="age" class="input" placeholder="Enter Age" required>
+                </div>
+
+                <div class="field">
+                    <label class="label">Level of Education</label>
+                    <p class="control">
+                        <span class="select">
+                        <select name="education">
+                            <option hidden disabled selected value> -- select an option -- </option>
+                            <option value="g-8">Grade 8</option>
+                            <option value="g-9">Grade 9</option>
+                            <option value="g-10">Grade 10</option>
+                            <option value="g-11">Grade 11</option>
+                            <option value="g-12">Grade 12</option>
+                            <option value="post_secondary">Post Secondary</option>
+                            <option value="undergraduate">Undergraduate</option>
+                            <option value="master">Master</option>
+                            <option value="doctorate">Doctorate</option>
+                        </select>
+                        </span>
+                    </p>
+                </div>
+
+                <div class="field">
+                    <label class="label">Level of Education</label>
+                    <p class="control">
+                        <span class="select">
+                        <select name="major">
+                            <option hidden disabled selected value> -- select an option -- </option>
+                            <option value="art">Art</option>
+                            <option value="english">English</option>
+                            <option value="math">Math</option>
+                            <option value="science">Science</option>
+                            <option value="socialstudies">Social Studies</option>
+                        </select>
+                        </span>
+                    </p>
+                </div>
+
+                <div class="control">
+                    <label class="radio">
+                      <input type="radio" name="type" value="tutor" required checked>
+                      Tutor
+                    </label>
+                    <label class="radio">
+                      <input type="radio" name="type" value="student" required>
+                      Student
+                    </label>
+                </div>
+                <br />
+
+                <button type="submit"
+                class="button is-danger">Sign Up</button>
+            </form>
+        </div>
     </div>
-
 
     <%- include("partials/footer") -%>

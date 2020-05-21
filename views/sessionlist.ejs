@@ -1,27 +1,44 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <script src="https://cdn.jsdelivr.net/npm/p5@1.0.0/lib/p5.min.js"></script>
-    <script
-      type="text/javascript"
-      src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"
-    ></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.5/socket.io.min.js"></script>
-    <title>WhiteBoard</title>
-  </head>
-  <body>
-    <div id="roomContainer">
-      <% Object.keys(rooms).forEach(room => { %>
-      <div><%= room %></div>
-      <a href="/session/<%= room%>"> Join</a>
-      <% }) %>
-    </div>
+<%- include("partials/header") -%>
 
-    <form action="/session/room" method="POST">
-      <input name="room" type="text" required />
-      <button type="submit">New Room</button>
-    </form>
-  </body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.5/socket.io.min.js"></script>
+    <title>Sessions | Tutors4Zoomers</title>
+  </head>
+
+  <body>
+    <%- include("partials/loginNav.ejs") -%>
+
+    <div class="container">
+
+      <section class="hero is-warning">
+        <div class="hero-body">
+            <h1 class="title">Sessions</h1>
+            <h2 class="subtitle">Create a tutoring session or join an existing one.</h2>
+        </div>
+      </section>
+      <br /><br />
+
+      <div class="block">
+        
+        <div id="roomContainer" class="box">
+          <h3 class="title is-3">Room List</h3>
+          <% Object.keys(rooms).forEach(room => { %>
+          <span> <a href="/session/<%= room%>" class="button is-primary is-outlined is-medium"><%= room %></a>
+            </span>
+          <% }) %>
+        </div>
+
+        <form action="/session/room" method="POST">
+          <div class="field has-addons">
+            <p class="control">
+              <input name="room" type="text" class="input" placeholder="Enter Room Name" required/>
+            </p>
+            <p class="control">
+              <button type="submit" class="button is-info">New Room</button>
+            </p>
+          </div>
+        </form>
+
+      </div>
   <script src="/sessionlist.js"></script>
-</html>
+    </div>
+<%- include("partials/footer") -%>

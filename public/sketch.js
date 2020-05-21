@@ -1,30 +1,29 @@
-
 let socket;
 let lineArray;
 let canvas;
-let currentColour = 'black';
+let currentColour = "black";
 let currentWeight = 5;
 let linesLength = [];
 let lineCount = 0;
 let lines = [];
 let imgURl;
-const roomContainer = document.getElementById('message-container');
+const roomContainer = document.getElementById("message-container");
 function setup() {
   canvas = createCanvas(400, 400);
   canvas.id("wb");
   lineArray = [];
   //socket = io.connect('http://localhost:3001/');
   socket = io.connect(window.location.hostname);
-  socket.on('line', newLines);
-  socket.on('colour',  updateColour);
-  socket.on('clear', clearCanvas);
-  socket.on('lineLengths',  updateLinesLength);
-  socket.on('lineArray',  updateLineArray);
-  socket.on('delete',  deleteNewest);
-  socket.on('weight',  updateWeightLocal);
-  socket.on('updateImg',  updateImg);
+  socket.on("line", newLines);
+  socket.on("colour", updateColour);
+  socket.on("clear", clearCanvas);
+  socket.on("lineLengths", updateLinesLength);
+  socket.on("lineArray", updateLineArray);
+  socket.on("delete", deleteNewest);
+  socket.on("weight", updateWeightLocal);
+  socket.on("updateImg", updateImg);
   // sends a new user message and the room name
-  socket.emit('new-user', roomName);
+  socket.emit("new-user", roomName);
 }
 
 function updateWeightLocal(data) {
@@ -32,26 +31,25 @@ function updateWeightLocal(data) {
 }
 function updateLinesLength(data) {
   linesLength = data;
-  console.log("update lines length")
+  console.log("update lines length");
 }
 
 function updateLineArray(data) {
   lineArray = data;
 }
 
-function deleteNewest(){
-  clearCanvas('cleared');
+function deleteNewest() {
+  clearCanvas("cleared");
   reDrawCanvas();
 }
 
-function newLines(data){
+function newLines(data) {
   // makes a line on a a screen based off received data.
-  let line = new LineObject(data.x,data.y,data.px,data.py,data.weight);
-  if(line){
+  let line = new LineObject(data.x, data.y, data.px, data.py, data.weight);
+  if (line) {
     console.log("got line from the web!");
   }
 }
-
 
 function updateColour(data) {
   currentColour = data;
@@ -62,13 +60,11 @@ function clearCanvas(data) {
   canvas.clear();
 }
 
-function draw()
-{
-}
+function draw() {}
 
-function LineObject(x,y,px,py,weight){
+function LineObject(x, y, px, py, weight) {
   // makes a line
-  let lineOutput = line(x,y,px,py);
+  let lineOutput = line(x, y, px, py);
   stroke(currentColour);
   strokeWeight(weight);
   return lineOutput;
@@ -81,17 +77,17 @@ function sendMouseData() {
     px: pmouseX,
     py: pmouseY,
     color: currentColour,
-    weight: currentWeight
+    weight: currentWeight,
   };
   // push coords into line array
   lines.push(coord);
   // sends the coords to the big array of lines
-  if(lines.length > 0) {
+  if (lines.length > 0) {
     lineArray.push(coord);
   }
   //console.log(coord);
   // send the coords to other users
-  socket.emit('line',roomName, coord);
+  socket.emit("line", roomName, coord);
 }
 
 function mousePressed() {
@@ -107,7 +103,7 @@ function mouseDragged() {
   sendMouseData();
 }
 
-function mouseReleased(){
+function mouseReleased() {
   // sends the line length to array
   if (lines.length > 0) {
     linesLength.push(lines.length);
@@ -119,7 +115,7 @@ function mouseReleased(){
 }
 
 function reDrawCanvas() {
-  if (linesLength.length === 0){
+  if (linesLength.length === 0) {
     return;
   }
   // how many points to delete
@@ -127,12 +123,12 @@ function reDrawCanvas() {
   console.log("length of line remove:" + numberOfPoints);
   // removes the amount of points specified
   let oldLength = lineArray.length;
-  lineArray.length = (oldLength - numberOfPoints);
+  lineArray.length = oldLength - numberOfPoints;
 
   // redraws all the lines in the scene that were not deleted
   for (let index = 0; index < lineArray.length; index++) {
     let data = lineArray[index];
-    LineObject(data.x, data.y, data.px,data.py, data.weight);
+    LineObject(data.x, data.y, data.px, data.py, data.weight);
     stroke(data.color);
   }
 
@@ -142,75 +138,74 @@ function reDrawCanvas() {
   myCanvas.style.backgroundColor = "white";
 }
 
-
 function keyPressed() {
   // remove all elements from the canvas
-  if (key === 'e') {
+  if (key === "e") {
     clearCanvas();
-    socket.emit('clear',roomName, 'clear');
+    socket.emit("clear", roomName, "clear");
   }
-  if(key === 'c') {
+  if (key === "c") {
     for (let x = 0; x < lineArray.length; x++) {
-      console.log('line: ' + x);
+      console.log("line: " + x);
     }
   }
 
-  if (key === 'z') {
-    socket.emit('lineLengths',roomName, linesLength);
-    socket.emit('lineArray',roomName, lineArray);
-    socket.emit('delete', roomName, 'delete');
+  if (key === "z") {
+    socket.emit("lineLengths", roomName, linesLength);
+    socket.emit("lineArray", roomName, lineArray);
+    socket.emit("delete", roomName, "delete");
     console.log("SENT DELETE");
-    deleteNewest()
+    deleteNewest();
   }
 }
 
 //change to red
-document.getElementById("red").addEventListener("click", function(){
+document.getElementById("red").addEventListener("click", function () {
   console.log("red");
-  currentColour = 'red';
-  socket.emit('colour',roomName, currentColour);
+  currentColour = "red";
+  socket.emit("colour", roomName, currentColour);
 });
 
 //change to yellow
-document.getElementById("yellow").addEventListener("click", function(){
-  currentColour = 'yellow';
-  socket.emit('colour',roomName, currentColour);
+document.getElementById("yellow").addEventListener("click", function () {
+  currentColour = "yellow";
+  socket.emit("colour", roomName, currentColour);
 });
 
 //change to yellow
-document.getElementById("black").addEventListener("click", function(){
-  currentColour = 'black';
-  socket.emit('colour',roomName, currentColour);
+document.getElementById("black").addEventListener("click", function () {
+  currentColour = "black";
+  socket.emit("colour", roomName, currentColour);
 });
 
 //change to eraser
-document.getElementById("eraser").addEventListener("click", function(){
-  currentColour = 'white';
+document.getElementById("eraser").addEventListener("click", function () {
+  currentColour = "white";
 
-  socket.emit('colour',roomName, currentColour);
+  socket.emit("colour", roomName, currentColour);
 });
 
 // change stroke weight
-document.getElementById("small").addEventListener("click", function(){
+document.getElementById("small").addEventListener("click", function () {
   currentWeight = 3;
-  socket.emit('weight',roomName, currentWeight);
+  socket.emit("weight", roomName, currentWeight);
 });
 
-document.getElementById("regular").addEventListener("click", function(){
+document.getElementById("regular").addEventListener("click", function () {
   currentWeight = 5;
-  socket.emit('weight',roomName, currentWeight);
+  socket.emit("weight", roomName, currentWeight);
 });
 
-document.getElementById("large").addEventListener("click", function(){
+document.getElementById("large").addEventListener("click", function () {
   currentWeight = 7;
-  socket.emit('weight',roomName, currentWeight);
+  socket.emit("weight", roomName, currentWeight);
 });
 
-let names = document.getElementById('submit');
+let names = document.getElementById("submit");
 let filename;
 names.addEventListener("click", function () {
   let file;
-  file = document.getElementById('fileUp');
+  file = document.getElementById("fileUp");
   console.log(file.files.item(0).name);
   filename = file.files.item(0).name;
 });
@@ -222,5 +217,3 @@ function updateImg(data) {
   myCanvas.style.backgroundSize = "100% 100%";
   console.log("bruh it worked?!");
 }
-
-

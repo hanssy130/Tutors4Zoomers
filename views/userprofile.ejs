@@ -1,70 +1,99 @@
 <%- include("partials/header") -%>
-<title>User Profile</title>
+    <title>User Profile | Tutors4Zoomers</title>
 </head>
 
 <body>
 
-
     <%- include("partials/loginNav.ejs") -%>
 
-    <div class="d-flex justify-content-center align-items-center login-container">
-        <form class="login-form text-center" action="/userprofileUpdate?_method=PUT" method="POST">
-            <div class="form-group">
-                <h5>Email</h5>
-                <input type="email" name="detail[email]" class="form-control rounded-pill form-control-lg" value="<%= user.detail.email %>"
-                    required>
-            </div>
-            <div class="form-group">
-                <h5>First Name</h5>
-                <input type="text" name="detail[firstName]" class="form-control rounded-pill form-control-lg"
-                value="<%= user.detail.firstName %>" required>
-            </div>
-            <div class="form-group">
-                <h5>Last Name</h5>
-                <input type="text" name="detail[lastName]" class="form-control rounded-pill form-control-lg"
-                    value="<%= user.detail.lastName %>" required>
-            </div>
-            <div class="form-group">
-                <h5>Age</h5>
-                <input type="text" name="detail[age]" class="form-control rounded-pill form-control-lg" value="<%= user.detail.age %>" required>
-            </div>
-            <div class="form-group">
-                <select name="detail[education]" id="" required>
-                    <option value="G-8">Grade-8</option>
-                    <option value="G-9">Grade-9</option>
-                    <option value="G-10">Grade-10</option>
-                    <option value="G-11">Grade-11</option>
-                    <option value="G-12">Grade-12</option>
-                    <option value="Post Secondary">Post Secondary</option>
-                    <option value="Undergraduate">Undergraduate</option>
-                    <option value="Master">Master</option>
-                    <option value="Doctorate">Doctorate</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <select name="detail[major]" id="" required>
-                    <option value="Art">Art</option>
-                    <option value="English">English</option>
-                    <option value="Math">Math</option>
-                    <option value="Science">Science</option>
-                    <option value="Social Studies">Social Studies</option>
+    <div class="container">
 
-                </select>
+        <section class="hero is-info">
+            <div class="hero-body">
+                <h1 class="title">Profile</h1>
+                <h2 class="subtitle">Fill out the fields below to update your profile.</h2>
             </div>
-            <div class="form-group">
-                <input type="radio" name="type" class="rounded-pill radio-inline" value="Tutor" required>
-                <label for="tutor">Tutor</label>
-                <input type="radio" name="type" class="rounded-pill radio-inline" value="Student" required>
-                <label for="type">Student</label>
-            </div>
-            <button type="submit"
-                class="btn mt-4 rounded-pill btn-lg btn-custom btn-block text-uppercase">Update</button>
-        </form>
+        </section>
+        <br />
+
+        <div class="block">
+            <form class="box" action="/userprofileUpdate?_method=PUT" method="POST">
+                <div class="field">
+                    <label class="label">Email</label>
+                    <input type="email" name="detail[email]" class="input" value="<%= user.detail.email %>" required>
+                </div>
+
+                <div class="field">
+                    <label class="label">First Name</label>
+                    <input type="text" name="detail[firstName]" class="input" value="<%= user.detail.firstName %>" required>
+                </div>
+
+                <div class="field">
+                    <label class="label">Last Name</label>
+                    <input type="text" name="detail[lastName]" class="input" value="<%= user.detail.lastName %>" required>
+                </div>
+
+                <div class="field">
+                    <label class="label">Age</label>
+                    <input type="text" name="detail[age]" class="input" value="<%= user.detail.age %>" required>
+                </div>
+
+                <div class="field">
+                    <label class="label">Level of Education</label>
+                    <p class="control">
+                        <span class="select">
+                        <select name="detail[education]">
+                            <option hidden disabled selected value> -- select an option -- </option>
+                            <option value="g-8">Grade 8</option>
+                            <option value="g-9">Grade 9</option>
+                            <option value="g-10">Grade 10</option>
+                            <option value="g-11">Grade 11</option>
+                            <option value="g-12">Grade 12</option>
+                            <option value="post_secondary">Post Secondary</option>
+                            <option value="undergraduate">Undergraduate</option>
+                            <option value="master">Master</option>
+                            <option value="doctorate">Doctorate</option>
+                        </select>
+                        </span>
+                    </p>
+                </div>
+
+                <div class="field">
+                    <label class="label">Level of Education</label>
+                    <p class="control">
+                        <span class="select">
+                        <select name="detail[major]">
+                            <option hidden disabled selected value> -- select an option -- </option>
+                            <option value="art">Art</option>
+                            <option value="english">English</option>
+                            <option value="math">Math</option>
+                            <option value="science">Science</option>
+                            <option value="socialstudies">Social Studies</option>
+                        </select>
+                        </span>
+                    </p>
+                </div>
+
+                <div class="control">
+                    <label class="radio">
+                      <input type="radio" name="type" value="tutor" required>
+                      Tutor
+                    </label>
+                    <label class="radio">
+                      <input type="radio" name="type" value="student" required>
+                      Student
+                    </label>
+                </div>
+                <br />
+
+                <button type="submit"
+                class="button is-success">Update</button>
+            </form>
+
+            <form action="/destoryprofile?_method=DELETE" method="POST">
+                <button class="button is-danger is-small">Delete My Account</button>
+            </form>
+        </div>
     </div>
 
-
-
-    <form action="/destoryprofile?_method=DELETE" method="POST">
-        <button>Delete</button>
-    </form>
 <%- include("partials/footer") -%>
