@@ -36,6 +36,14 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(__dirname + "/public"));
 app.use(methodOverride("_method"));
 
+// Cloudinary config
+//======================================
+cloudinary.config({
+  cloud_name: 'dprpcrp7n',
+  api_key: '376436784342749',
+  api_secret: '9eZqrbd0_77WGybe8zd88sh9LSg'
+});
+
 // Initialize Mongoose
 // =========================================
 const dbUsername = "gyang";
