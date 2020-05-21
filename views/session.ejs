@@ -1,41 +1,44 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta charset="UTF-8" />
+    <meta
+      charset="UTF-8"
+      name="viewport"
+      content="width=device-width,initial-scale=1"
+    />
     <script src="https://cdn.jsdelivr.net/npm/p5@1.0.0/lib/p5.min.js"></script>
     <script
       type="text/javascript"
       src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"
     ></script>
+    <link rel="icon" href="./resources/favicon.png" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.2/css/bulma.min.css"
+    />
+    <script
+      defer
+      src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"
+    ></script>
+
+    <title>Your Room | Tutors4Zoomers</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.5/socket.io.min.js"></script>
     <script>
       const roomName = "<%= roomName%>";
     </script>
+
     <style>
       body {
-        background-image: url("../resources/loginbg.jpg");
-        background-size: 1920px;
-        font-family: "Segoe UI", Arial, sans-serif;
-      }
-      #form {
-        background-color: white;
-        height: 475px;
-        width: 475px;
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        -webkit-box-shadow: 0px 0px 47px 16px rgba(0, 0, 0, 0.84);
-        -moz-box-shadow: 0px 0px 47px 16px rgba(0, 0, 0, 0.84);
-        box-shadow: 0px 0px 47px 16px rgba(0, 0, 0, 0.84);
-        padding: 25px;
+        background-color: #38b6ff;
+        width: 100vw;
+        height: 100vh;
       }
     </style>
   </head>
 
   <body>
-    <div id="form">
-      <div id="colourBox">
+    <div class="container">
+      <div class="block">
         <button class="colours" id="red">RED</button>
         <button class="colours" id="yellow">YELLOW</button>
         <button class="colours" id="black">BLACK</button>
@@ -45,8 +48,19 @@
       <button id="regular">REGULAR</button>
       <button id="large">LARGE</button>
       <!--the file upload form-->
-      <form method="post" enctype="multipart/form-data" action="/">
+      <form
+        method="post"
+        enctype="multipart/form-data"
+        action="/images"
+        id="upload"
+      >
         <input type="file" name="filename" id="fileUp" />
+        <input
+          type="text"
+          value="<%= roomName%>"
+          id="socketInfo"
+          name="socketName"
+        />
         <input type="submit" name="upload" id="submit" />
       </form>
       <script src="/sketch.js"></script>
