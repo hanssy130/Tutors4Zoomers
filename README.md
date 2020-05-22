@@ -1,4 +1,4 @@
-![Tutors4Zoomers Logo](https://github.com/hanssy130/COMP-2800-Team-DTC-13-Tutors4Zoomers/blob/master/public/resources/logo.png)
+<p align="center"> <img src="https://github.com/hanssy130/COMP-2800-Team-DTC-13-Tutors4Zoomers/blob/master/public/resources/logo.png" /></p>
 
 # 1) Introduction
 Tutors4Zoomers is a web application that connects volunteer tutors with students in need of help. During COVID-19, we observed that our communities needed more support for education at home, and that people have become more willing to help others. Our platform connects these two ideas to bring them together.
