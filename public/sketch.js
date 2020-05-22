@@ -165,6 +165,48 @@ function keyPressed() {
   }
 }
 
+// //change to turqoise
+// document.getElementById("turqoise").addEventListener("click", function () {
+//   console.log("turqoise");
+//   currentColour = "turqoise";
+//   socket.emit("colour", roomName, currentColour);
+// });
+
+// //change to blue
+// document.getElementById("blue").addEventListener("click", function () {
+//   console.log("blue");
+//   currentColour = "blue";
+//   socket.emit("colour", roomName, currentColour);
+// });
+
+// //change to green
+// document.getElementById("green").addEventListener("click", function () {
+//   console.log("green");
+//   currentColour = "green";
+//   socket.emit("colour", roomName, currentColour);
+// });
+
+//change to turquoise
+document.getElementById("turquoise").addEventListener("click", function () {
+  console.log("turquoise");
+  currentColour = "turquoise";
+  socket.emit("colour", roomName, currentColour);
+});
+
+//change to blue
+document.getElementById("blue").addEventListener("click", function () {
+  console.log("blue");
+  currentColour = "blue";
+  socket.emit("colour", roomName, currentColour);
+});
+
+//change to green
+document.getElementById("green").addEventListener("click", function () {
+  console.log("green");
+  currentColour = "green";
+  socket.emit("colour", roomName, currentColour);
+});
+
 //change to red
 document.getElementById("red").addEventListener("click", function () {
   console.log("red");
@@ -187,23 +229,23 @@ document.getElementById("black").addEventListener("click", function () {
 //change to eraser
 document.getElementById("eraser").addEventListener("click", function () {
   currentColour = "white";
-
-  socket.emit("colour", roomName, currentColour);
+  currentWeight = 50;
+  socket.emit("colour", roomName, currentColour, currentWeight);
 });
 
 // change stroke weight
 document.getElementById("small").addEventListener("click", function () {
-  currentWeight = 3;
-  socket.emit("weight", roomName, currentWeight);
-});
-
-document.getElementById("regular").addEventListener("click", function () {
   currentWeight = 5;
   socket.emit("weight", roomName, currentWeight);
 });
 
+document.getElementById("regular").addEventListener("click", function () {
+  currentWeight = 10;
+  socket.emit("weight", roomName, currentWeight);
+});
+
 document.getElementById("large").addEventListener("click", function () {
-  currentWeight = 7;
+  currentWeight = 20;
   socket.emit("weight", roomName, currentWeight);
 });
 

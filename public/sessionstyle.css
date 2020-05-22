@@ -1,0 +1,36 @@
+body {
+  background-color: #38b6ff;
+
+  width: 100vw;
+  height: 100vh;
+}
+
+.columns {
+  background-color: #38b6ff;
+}
+
+#socketInfo {
+  display: none;
+}
+
+#wb {
+  background-color: white;
+}
+
+#conversation {
+  overflow: scroll;
+  height: 25vh;
+  background-color: white;
+  text-align: left;
+  padding: 10px;
+}
+
+@media only screen and {max-width: 768px}
+  #videoContainer {
+    width: 75%;
+  }
+
+  .column {
+  text-align: center;
+}
+}
