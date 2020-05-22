@@ -1,0 +1,54 @@
+<%- include("partials/header") -%>
+    <title>All Users | Tutors4Zoomers</title>
+  </head>
+
+<body>
+<%- include("partials/loginNav.ejs") -%>
+
+<div class="container">
+
+    <section class="hero is-success">
+        <div class="hero-body">
+            <h1 class="title">All Users</h1>
+            <h2 class="subtitle">Find someone who suits your needs and send an automatically generated contact request email.
+        </h2>
+        </div>
+    </section>
+    <br /><br />
+
+    <div class="block">
+        <center>
+        <table class="table is-striped">
+          <thead>
+            <tr>
+                <th>Education</th>
+                <th>Major</th>
+                <th>Tutor or Student?</th>
+                <th>
+                    Send an email to request contact.
+                </th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <% allData.forEach(data => { %>
+                <tr>
+                    <td><%= data.detail.education %></td>
+                    <td><%= data.detail.major %></td>
+                    <td style="text-align:center;"><%= data.status %></td>
+                    <td style="text-align:center;">
+                        <form action="/sendemail" method="POST">
+                        <input type="text" name="email" id="" hidden value="<%= data.detail.email %>">
+                        <button class="button">Contact</button>
+                        </form>
+                    </td>
+                </tr>
+                <% }) %>
+          </tbody>
+        </table>
+    </center>
+    </div>
+
+</div>
+
+<%- include("partials/footer") -%>

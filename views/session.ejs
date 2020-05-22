@@ -6,44 +6,148 @@
       name="viewport"
       content="width=device-width,initial-scale=1"
     />
-    <title>Open Session | Tutors4Zoomers</title>
+
+    <link rel="stylesheet" href="/chatroom.css" />
     <script src="https://cdn.jsdelivr.net/npm/p5@1.0.0/lib/p5.min.js"></script>
+    <script
+      type="text/javascript"
+      src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"
+    ></script>
+    <link rel="icon" href="./resources/favicon.png" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.2/css/bulma.min.css"
+    />
+    <script
+      defer
+      src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"
+    ></script>
+
+    <title>Your Room | Tutors4Zoomers</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.5/socket.io.min.js"></script>
+    <!--Merge conflict: plan to resolve-->
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
+    <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
+
+    <script>
+      const roomName = "<%= roomName%>";
+    </script>
 
     <style>
       body {
-        background-image: url("../resources/loginbg.jpg");
-        background-size: 1920px;
-        font-family: "Segoe UI", Arial, sans-serif;
+        background-color: #38b6ff;
+
+        width: 100vw;
+        height: 100vh;
       }
-      #form {
+
+      .columns {
+        background-color: #38b6ff;
+      }
+
+      #socketInfo {
+        display: none;
+      }
+
+      #wb {
         background-color: white;
-        height: 475px;
-        width: 475px;
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        -webkit-box-shadow: 0px 0px 47px 16px rgba(0, 0, 0, 0.84);
-        -moz-box-shadow: 0px 0px 47px 16px rgba(0, 0, 0, 0.84);
-        box-shadow: 0px 0px 47px 16px rgba(0, 0, 0, 0.84);
-        padding: 25px;
+      }
+
+      #conversation {
+        overflow: scroll;
+        height: 25vh;
+        background-color: white;
+        text-align: left;
+        padding: 10px;
+      }
+
+      @media only screen and {max-width: 768px}
+        #videoContainer {
+          width: 75%;
+        }
+
+        .column {
+        text-align: center;
+      }
       }
     </style>
   </head>
 
   <body>
-    <div id="form">
-      <div id="colourBox">
-        <button class="colours" id="red">RED</button>
-        <button class="colours" id="yellow">YELLOW</button>
-        <button class="colours" id="black">BLACK</button>
+    <br /><br />
+    <div class="container">
+      <div class="block">
+        <div id="whiteboard-holder" class="column is-two-thirds"></div>
       </div>
-      <button id="eraser">ERASER</button><br />
-      <button id="small">SMALL</button>
-      <button id="regular">REGULAR</button>
-      <button id="large">LARGE</button>
-      <script src="/sketch.js"></script>
+
+      <div class="block">
+        <div class="columns">
+          <div class="column">
+            <div class="block">
+              <button class="colours" id="red">RED</button>
+              <button class="colours" id="yellow">YELLOW</button>
+              <button class="colours" id="black">BLACK</button>
+            </div>
+            <button id="eraser">ERASER</button><br />
+            <button id="small">SMALL</button>
+            <button id="regular">REGULAR</button>
+            <button id="large">LARGE</button>
+
+            <form
+              method="post"
+              enctype="multipart/form-data"
+              action="/images"
+              id="upload"
+            >
+              <input type="file" name="filename" id="fileUp" />
+              <input
+                type="text"
+                value="<%= roomName%>"
+                id="socketInfo"
+                name="socketName"
+              />
+              <input type="submit" name="upload" id="submit" />
+            </form>
+          </div>
+
+          <div class="column">
+            <div id="conversation"></div>
+            <br />
+            <div class="field has-addons">
+              <p class="control">
+                <input
+                  id="msg"
+                  class="input"
+                  type="text"
+                  placeholder="Type message"
+                />
+              </p>
+              <p class="control">
+                <input id="sendMsg" type="button" class="button" value="Send" />
+              </p>
+            </div>
+            <div>
+              <p>Users in room:</p>
+              <div id="onlineUser"></div>
+            </div>
+          </div>
+
+          <div class="column">
+            <video id="localVideo" autoplay playsinline></video>
+          </div>
+
+          <div class="column">
+            <video id="remoteVideo" autoplay playsinline></video>
+          </div>
+        </div>
+      </div>
+
+      <!-- Merge conflict here, don't know why though -->
+      <!--the file upload form-->
     </div>
+
+    <script src="/sketch.js"></script>
+    <script src="/chat.js"></script>
   </body>
 </html>

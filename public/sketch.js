@@ -1,4 +1,4 @@
-let socket;
+let socket = io();
 let lineArray;
 let canvas;
 let currentColour = "black";
@@ -6,13 +6,20 @@ let currentWeight = 5;
 let linesLength = [];
 let lineCount = 0;
 let lines = [];
+let imgURl;
+const roomContainer = document.getElementById("message-container");
 function setup() {
-  canvas = createCanvas(400, 400);
-  canvas.id("myCanvas");
-  // set background to white
-  background(400);
+  canvas = createCanvas(0.75 * windowWidth, 0.5 * windowHeight);
+  canvas.id("wb");
+  canvas.parent("whiteboard-holder");
+
   lineArray = [];
-  socket = io.connect("http://localhost:3001/");
+
+  socket = io();
+
+  // socket = io.connect("http://localhost:3001/");
+  socket = io.connect(window.location.hostname);
+
   socket.on("line", newLines);
   socket.on("colour", updateColour);
   socket.on("clear", clearCanvas);
@@ -20,6 +27,9 @@ function setup() {
   socket.on("lineArray", updateLineArray);
   socket.on("delete", deleteNewest);
   socket.on("weight", updateWeightLocal);
+  socket.on("updateImg", updateImg);
+  // sends a new user message and the room name
+  socket.emit("new-user", roomName);
 }
 
 function updateWeightLocal(data) {
@@ -54,7 +64,6 @@ function updateColour(data) {
 function clearCanvas(data) {
   console.log(data);
   canvas.clear();
-  background(51);
 }
 
 function draw() {}
@@ -67,12 +76,7 @@ function LineObject(x, y, px, py, weight) {
   return lineOutput;
 }
 
-function mouseDragged() {
-  // uses the current coords of the mouse and previous coords to make a line
-  LineObject(mouseX, mouseY, pmouseX, pmouseY, currentWeight);
-  stroke(currentColour);
-
-  // a data structure to send data to other computers
+function sendMouseData() {
   let coord = {
     x: mouseX,
     y: mouseY,
@@ -89,7 +93,20 @@ function mouseDragged() {
   }
   //console.log(coord);
   // send the coords to other users
-  socket.emit("line", coord);
+  socket.emit("line", roomName, coord);
+}
+
+function mousePressed() {
+  LineObject(mouseX, mouseY, mouseX, mouseY, currentWeight);
+  stroke(currentColour);
+  sendMouseData();
+}
+function mouseDragged() {
+  // uses the current coords of the mouse and previous coords to make a line
+  LineObject(mouseX, mouseY, pmouseX, pmouseY, currentWeight);
+  stroke(currentColour);
+
+  sendMouseData();
 }
 
 function mouseReleased() {
@@ -120,13 +137,18 @@ function reDrawCanvas() {
     LineObject(data.x, data.y, data.px, data.py, data.weight);
     stroke(data.color);
   }
+
+  let myCanvas = document.getElementById("wb");
+  // myCanvas.style.background = "url('https://www.enchantedlearning.com/generate/thumbnails/multiply-1-1-6.gif')";
+  // myCanvas.style.backgroundSize = "100% 100%";
+  myCanvas.style.backgroundColor = "white";
 }
 
 function keyPressed() {
   // remove all elements from the canvas
   if (key === "e") {
     clearCanvas();
-    socket.emit("clear", "clear");
+    socket.emit("clear", roomName, "clear");
   }
   if (key === "c") {
     for (let x = 0; x < lineArray.length; x++) {
@@ -135,9 +157,9 @@ function keyPressed() {
   }
 
   if (key === "z") {
-    socket.emit("lineLengths", linesLength);
-    socket.emit("lineArray", lineArray);
-    socket.emit("delete");
+    socket.emit("lineLengths", roomName, linesLength);
+    socket.emit("lineArray", roomName, lineArray);
+    socket.emit("delete", roomName, "delete");
     console.log("SENT DELETE");
     deleteNewest();
   }
@@ -147,39 +169,57 @@ function keyPressed() {
 document.getElementById("red").addEventListener("click", function () {
   console.log("red");
   currentColour = "red";
-  socket.emit("colour", currentColour);
+  socket.emit("colour", roomName, currentColour);
 });
 
 //change to yellow
 document.getElementById("yellow").addEventListener("click", function () {
   currentColour = "yellow";
-  socket.emit("colour", currentColour);
+  socket.emit("colour", roomName, currentColour);
 });
 
 //change to yellow
 document.getElementById("black").addEventListener("click", function () {
   currentColour = "black";
-  socket.emit("colour", currentColour);
+  socket.emit("colour", roomName, currentColour);
 });
 
 //change to eraser
 document.getElementById("eraser").addEventListener("click", function () {
-  currentColour = 51;
-  socket.emit("colour", currentColour);
+  currentColour = "white";
+
+  socket.emit("colour", roomName, currentColour);
 });
 
 // change stroke weight
 document.getElementById("small").addEventListener("click", function () {
   currentWeight = 3;
-  socket.emit("weight", currentWeight);
+  socket.emit("weight", roomName, currentWeight);
 });
 
 document.getElementById("regular").addEventListener("click", function () {
   currentWeight = 5;
-  socket.emit("weight", currentWeight);
+  socket.emit("weight", roomName, currentWeight);
 });
 
 document.getElementById("large").addEventListener("click", function () {
   currentWeight = 7;
-  socket.emit("weight", currentWeight);
+  socket.emit("weight", roomName, currentWeight);
 });
+
+let names = document.getElementById("submit");
+let filename;
+names.addEventListener("click", function () {
+  let file;
+  file = document.getElementById("fileUp");
+  console.log(file.files.item(0).name);
+  filename = file.files.item(0).name;
+});
+
+function updateImg(data) {
+  let url = data;
+  let myCanvas = document.getElementById("wb");
+  myCanvas.style.background = "url('" + url + "')";
+  myCanvas.style.backgroundSize = "100% 100%";
+  console.log("bruh it worked?!");
+}
