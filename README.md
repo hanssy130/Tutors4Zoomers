@@ -18,8 +18,27 @@ This app was developed by four students studying [Computer Systems Technology](h
 - Creating Tutoring Session Rooms
 - Video Chat
 - Interactive Whiteboard
-- Live Messaging
+- Live Chatroom
 
+## 2a) Registration & Authentication
+For our authentication strategy we used a local strategy with passport, the information stored in our database is encrypted by passport. In order to configure our database please contact [georgeyang532@gmail.com](mailto:georgeyang532@gmail.com) and request an invite.
+
+For our database strategy we used mongodb, the information stored is under one user schema.
+
+## 2b) Contacting Tutors
+Using Nodemailer, users are able to contact Tutors or Students. Nodemailer accesses the recipient's email address from MongoDB, and sends an email. The recipient is notified of the interest in contact and receives the sender's email address too.
+
+## 2c) Creating Tutoring Session Rooms
+Session Rooms are kept track with socket.io.
+
+## 2d) Video Chat
+The video chat implementation is built using WebRTC, socket.io. By using getUserMedia() to capture user stream, RTCPeerConnection is then used to set up connection between users to allow data transfer. Note: user need to establish a TURN/STUN server to allow data transfer. We got our server from Twillio's services.
+
+## 2e) Interactive Whiteboard
+The whiteboard feature runs on the `p5.js` and Socket.io libraries. `p5.js` handles the generation of a drawing surface, brush thickness, and brush colour. To make sure all members of a room see the same image, Socket.io is used to transmit data like new drawings and current brush colour to all users of the same room.
+
+## 2f) Live Chatroom
+The chatroom implementation is built on socket.io library. Socket allows real-time, bi-direction event based data transfer, which allows us to send simple messages to all users in the room.
 
 # 3) Set Up
 
@@ -63,6 +82,16 @@ cloudinary.config({
   api_secret: "9eZqrbd0_77WGybe8zd88sh9LSg",
 });
 ```
+```
+// Initialize Mongoose
+// =========================================
+const dbUsername = "gyang";
+const dbPassword = "123123123";
+mongoose.connect(
+  `mongodb+srv://${dbUsername}:${dbPassword}@cluster0-p9khr.mongodb.net/T4Z`,
+  { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false }
+);
+```
 
 ## 3c) Installation Instructions
 Ensure you have the following installed in this order:
@@ -73,9 +102,3 @@ Ensure you have the following installed in this order:
 5. Enter `npm install` and it will automatically detect the dependencies from package.json (e.g. Express, Socket, etc).
 6. To run a local server, enter `node index.js`.
 ***!Warning!*** To use socket.io locally, ensure that the local host port is selected in `/public/sketch.js` and `/public/sessionlist.js`. 
-
-# Video Chat Implementation
-The video chat implementation is built using WebRTC, socket.io. By using getUserMedia() to capture user stream, RTCPeerConnection is then used to set up connection between users to allow data transfer. Note: user need to establish a TURN/STUN server to allow data transfer. We got our server from Twillio's services.
-
-# Chatroom Implementation
-The chatroom implementation is built on socket.io library. Socket allows real-time, bi-direction event based data transfer, which allows us to send simple messages to all users in the room.
